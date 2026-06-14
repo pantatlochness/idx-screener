@@ -28,8 +28,8 @@ def load_universe():
     return [row[0] for row in data]
 
 
-def fetch_one(sym, retries=2):
-    path = (f"/v8/finance/chart/{sym}.JK?range={RANGE}&interval={INTERVAL}")
+def fetch_one(sym, retries=2, suffix=".JK"):
+    path = (f"/v8/finance/chart/{sym}{suffix}?range={RANGE}&interval={INTERVAL}")
     last = None
     for attempt in range(retries):
         host = HOSTS[attempt % len(HOSTS)]
@@ -136,6 +136,17 @@ def main():
             fmatch += 1
     print(f"Foreign flow merged into {fmatch} tickers")
 
+    # Market regime: IHSG (^JKSE) vs its 50-day MA -> risk-on / risk-off
+    index_block = None
+    ihsg = fetch_one("^JKSE", suffix="")
+    if ihsg and len(ihsg["c"]) >= 50:
+        cc = ihsg["c"]; ma50 = sum(cc[-50:]) / 50; last = cc[-1]; prev = cc[-2]
+        index_block = {"name": "IHSG", "close": round(last, 2), "ma50": round(ma50, 2),
+                       "regimeUp": bool(last > ma50), "chg": round((last - prev) / prev * 100, 2)}
+        print(f"IHSG {last:.0f} vs MA50 {ma50:.0f} -> {'RISK-ON' if last>ma50 else 'RISK-OFF'}")
+    else:
+        print("IHSG unavailable -- regime banner will be hidden")
+
     out = {
         "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "source": "yahoo-finance-chart",
@@ -143,6 +154,7 @@ def main():
         "count": ok,
         "failed": fail,
         "foreignCovered": fmatch,
+        "index": index_block,
         "bars": bars,
     }
     (ROOT / "data.json").write_text(json.dumps(out, separators=(",", ":")),
