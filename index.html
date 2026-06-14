@@ -101,9 +101,13 @@
       <select id="fSetup">
         <option value="">All setups</option>
         <option value="Momentum Breakout">Momentum Breakout</option>
+        <option value="Breakout Watch">Breakout Watch</option>
         <option value="Pullback Buy">Pullback Buy</option>
-        <option value="Reversal Watch">Reversal Watch</option>
         <option value="Trend Continuation">Trend Continuation</option>
+        <option value="Oversold Bounce">Oversold Bounce</option>
+        <option value="Reversal Watch">Reversal Watch</option>
+        <option value="Overbought – caution">Overbought – caution</option>
+        <option value="Neutral / No setup">Neutral / No setup</option>
       </select>
     </div>
     <div class="ctl">
@@ -327,11 +331,18 @@ function analyze(sym,name,sector,bars){
 
   s=Math.max(0,Math.min(100,Math.round(s)));
 
-  let setup="Trend Continuation";
-  if(breakout && volr>=1.5 && aboveMA>=2) setup="Momentum Breakout";
-  else if(stacked && rsiV>=40 && rsiV<55 && ma20 && close>=ma20*0.97 && close<=ma20*1.05) setup="Pullback Buy";
-  else if(ma50 && close<ma50 && rsiV!=null && rsiV<38 && bullPat && volr>=1.3) setup="Reversal Watch";
-  else if(rsiV>80) setup="Overbought – caution";
+  const nearHigh=close>=hi20*0.985;
+  const upTrend=ma50&&close>ma50&&ma20&&close>ma20&&ma5>ma20;
+  const dnTrend=ma50&&close<ma50;
+  let setup;
+  if(rsiV!=null && rsiV>80) setup="Overbought – caution";
+  else if(breakout && volr>=1.5 && aboveMA>=2) setup="Momentum Breakout";
+  else if(nearHigh && volr>=1.4 && aboveMA>=2) setup="Breakout Watch";
+  else if(upTrend && rsiV>=42 && rsiV<58 && close<=ma20*1.06 && close>=ma20*0.94) setup="Pullback Buy";
+  else if(dnTrend && volr>=1.5 && chg>=3) setup="Oversold Bounce";
+  else if(dnTrend && rsiV!=null && rsiV<40 && (bullPat||chg>0)) setup="Reversal Watch";
+  else if(upTrend) setup="Trend Continuation";
+  else setup="Neutral / No setup";
 
   const atrV=a||close*0.03;
   const entry=close;
@@ -451,7 +462,7 @@ function fmt(n){ if(n==null||isNaN(n)) return "–"; return Math.round(n).toLoca
 function fmt1(n){ return n==null||isNaN(n)?"–":n.toFixed(1); }
 function scoreColor(s){ return s>=75?"var(--green)":s>=60?"var(--cyan)":s>=45?"var(--yellow)":"var(--muted)"; }
 function badge(setup){
-  const map={"Momentum Breakout":"b-break","Pullback Buy":"b-pull","Reversal Watch":"b-rev","Overbought – caution":"b-over","Trend Continuation":"b-watch"};
+  const map={"Momentum Breakout":"b-break","Breakout Watch":"b-break","Pullback Buy":"b-pull","Trend Continuation":"b-pull","Oversold Bounce":"b-rev","Reversal Watch":"b-rev","Overbought – caution":"b-over","Neutral / No setup":"b-watch"};
   return '<span class="badge '+(map[setup]||"b-watch")+'">'+setup+'</span>';
 }
 
@@ -680,7 +691,7 @@ document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
 document.getElementById("foot").innerHTML=
   "Universe: "+UNIVERSE.length+" liquid IDX names across all sectors (edit tickers.json to add/remove). "+
   "Scoring: momentum 30 · volume surge 20 · trend 20 · RSI 10 · MACD 10 · candlestick 10 · gap/bandar bonus. "+
-  "Setups: Momentum Breakout, Pullback Buy, Reversal Watch, Trend Continuation. "+
+  "Setups: Momentum Breakout, Breakout Watch, Pullback Buy, Trend Continuation, Oversold Bounce, Reversal Watch, Overbought, Neutral. "+
   "Risk: stop = max(5-day swing low, close − 1.5×ATR); targets at 1.5× and 3× ATR; lots sized to your capital × risk%. "+
   "Data: Yahoo Finance .JK daily bars, delayed. No broker summary in free data — use the bandarmology box for foreign-flow input.";
 
