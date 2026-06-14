@@ -1,0 +1,18 @@
+{
+  "_comment": "Candidate pool for the auto-built liquid universe. build_tickers.py measures each code's real liquidity on Yahoo and keeps only the tradable ones. Codes that no longer trade or are illiquid are dropped automatically; new liquid listings discovered from IDX in CI are added. Edit freely - wrong/dead codes are harmless (they just fail the liquidity test).",
+  "Banks": ["BBCA","BBRI","BMRI","BBNI","BRIS","BBTN","ARTO","BANK","AGRO","BJBR","BJTM","BTPS","BNGA","NISP","PNBN","BDMN","MEGA","BBYB","AMAR","SDRA","BNLI","BBKP","MAYA","BBHI","BGTG","BNII","BSIM","PNLF","PNIN","ADMF","BFIN","CFIN","TUGU"],
+  "Energy": ["ADRO","ADMR","PTBA","ITMG","INDY","HRUM","PGAS","MEDC","ELSA","AKRA","RAJA","BUMI","DOID","DEWA","PTRO","CUAN","PGEO","BREN","BSSR","GEMS","TOBA","SMMT","MBAP","BYAN","MYOH","ABMM","ARII","RMKE","WINS","RUIS","APEX"],
+  "Metals": ["ANTM","INCO","NCKL","MDKA","TINS","MBMA","BRMS","HRTA","PSAB","ZINC","NICL","DKFT","CITA","SMRU","IFSH","ARCI"],
+  "BasicMaterials": ["SMGR","INTP","SMBR","WTON","WSBP","BRPT","TPIA","ESSA","AGII","INCI","EKAD","SRSN","AVIA","ARNA","TOTO","MARK","IPOL","FPNI","ISSP","ALMI","NIKL","KRAS","JPRS"],
+  "Consumer": ["ICBP","INDF","UNVR","MYOR","SIDO","GGRM","HMSP","AMRT","CPIN","JPFA","ULTJ","CMRY","ROTI","KINO","WIIM","CLEO","STTP","GOOD","ADES","CAMP","MLBI","DLTA","SKLT","TBLA","AALI","LSIP","SIMP","SGRO","DSNG","SSMS","TAPG","BWPT","ANJT","MAIN","SIPD"],
+  "Healthcare": ["KLBF","KAEF","INAF","TSPC","PYFA","DVLA","MERK","SOHO","MIKA","HEAL","SILO","SRAJ","PRDA","BMHS","CARE"],
+  "Retail": ["MAPI","MAPA","ACES","ERAA","RALS","LPPF","MIDI","CSAP","HERO","MPPA","RANC","ECII"],
+  "Telco": ["TLKM","ISAT","EXCL","MTEL","TOWR","TBIG","LINK"],
+  "Tech": ["GOTO","BUKA","EMTK","WIFI","DCII","MLPT","EDGE","DMMX","MTDL","ATIC","KIOS","DIVA","NFCX","MSTI","TECH","WIRG","BELI"],
+  "Property": ["BSDE","CTRA","SMRA","PWON","ASRI","PANI","CBDK","DMAS","LPKR","APLN","DILD","KIJA","SMDM","MTLA","BEST","BKSL","RDTX","PPRO"],
+  "Construction": ["WIKA","PTPP","ADHI","WSKT","TOTL","NRCA","DGIK","SSIA","JKON","ACST","IDPR"],
+  "Industrials": ["ASII","UNTR","AUTO","GJTL","IMAS","DRMA","BOLT","SMSM","MASA","INDS","GDYR","BRAM","HEXA","TURI"],
+  "PulpPaper": ["INKP","TKIM","FASW","SPMA","KDSI","ALDO"],
+  "Transport": ["BIRD","ASSA","SMDR","TMAS","IPCC","IPCM","NELY","GIAA","CMPP","HAIS","SAPX"],
+  "Media": ["SCMA","MNCN","MSIN","FILM","VIVA","BMTR","MARI","TFAS","MDIA"]
+}
