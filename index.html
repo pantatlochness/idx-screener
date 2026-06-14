@@ -84,6 +84,14 @@
 
   <div class="controls">
     <div class="ctl">
+      <label>Profile</label>
+      <select id="profile">
+        <option value="daily">Daily (intraday→few days)</option>
+        <option value="swing">Swing (days→2 weeks)</option>
+        <option value="scalp">Scalp (buy AM / sell EOD)</option>
+      </select>
+    </div>
+    <div class="ctl">
       <label>Data mode</label>
       <select id="mode">
         <option value="snapshot">GitHub snapshot (auto-updated)</option>
@@ -131,6 +139,8 @@
     <button class="ghost" id="loadSample">Load demo data</button>
     <span id="statusTxt" class="sub"></span>
   </div>
+
+  <div id="note" class="sub" style="margin:-4px 0 10px"></div>
 
   <div id="progress"><div id="progressBar"></div></div>
 
@@ -277,8 +287,133 @@ function candles(o,h,l,c){
   return tags;
 }
 
+/* ---------------- Profile-specific scorers (each returns {score,why,setup}) ---------------- */
+function clampScore(s){ return Math.max(0,Math.min(100,Math.round(s))); }
+
+function scoreDaily(d){
+  let s=0; const why=[];
+  let mom=0;
+  if(d.breakout){mom+=14; why.push(["+14","Broke 20-day high — fresh breakout"]);}
+  if(d.roc5>0){const x=Math.min(10,d.roc5*1.2); mom+=x; why.push(["+"+x.toFixed(0),"5-day momentum +"+d.roc5.toFixed(1)+"%"]);}
+  mom+=Math.min(6,d.aboveMA*2); if(d.aboveMA) why.push(["+"+(d.aboveMA*2),"Above "+d.aboveMA+" key MA(s)"]);
+  s+=Math.min(30,mom);
+  let vol=0;
+  if(d.volr>=3){vol=20; why.push(["+20","Volume "+d.volr.toFixed(1)+"× the 20d avg"]);}
+  else if(d.volr>=2){vol=15; why.push(["+15","Volume "+d.volr.toFixed(1)+"× avg"]);}
+  else if(d.volr>=1.4){vol=9; why.push(["+9","Volume "+d.volr.toFixed(1)+"× avg"]);}
+  else if(d.volr>=1){vol=4;}
+  s+=vol;
+  let tr=0; if(d.stacked){tr+=12; why.push(["+12","MA5>MA20>MA50 — uptrend stack"]);}
+  if(d.ma20&&d.close>d.ma20){tr+=8;} s+=Math.min(20,tr);
+  let r=0;
+  if(d.rsi!=null){
+    if(d.rsi>=50&&d.rsi<=68){r=10; why.push(["+10","RSI "+d.rsi.toFixed(0)+" — healthy zone"]);}
+    else if(d.rsi>68&&d.rsi<=80){r=5;}
+    else if(d.rsi>80){r=0; why.push(["+0","RSI "+d.rsi.toFixed(0)+" — overbought"]);}
+    else if(d.rsi>=40&&d.rsi<50){r=6; why.push(["+6","RSI "+d.rsi.toFixed(0)+" — pullback zone"]);}
+    else if(d.rsi<30){r=4; why.push(["+4","RSI "+d.rsi.toFixed(0)+" — oversold"]);}
+  } s+=r;
+  if(d.macd){ if(d.macd.hist>0&&d.macd.macd>d.macd.signal){s+=10; why.push(["+10","MACD bullish"]);} else if(d.macd.hist>0){s+=5;} }
+  if(d.bullPat){s+=10; why.push(["+10","Bullish candle: "+d.pats.filter(p=>!/Bearish|Shooting|Doji/.test(p)).join(", ")]);}
+  else if(d.bearPat){s-=6; why.push(["-6","Bearish candle: "+d.pats.join(", ")]);}
+  if(d.gap>3){s+=3; why.push(["+3","Gapped up "+d.gap.toFixed(1)+"%"]);}
+  let setup;
+  if(d.rsi!=null&&d.rsi>80) setup="Overbought – caution";
+  else if(d.breakout&&d.volr>=1.5&&d.aboveMA>=2) setup="Momentum Breakout";
+  else if(d.nearHigh&&d.volr>=1.4&&d.aboveMA>=2) setup="Breakout Watch";
+  else if(d.upTrend&&d.rsi>=42&&d.rsi<58&&d.close<=d.ma20*1.06&&d.close>=d.ma20*0.94) setup="Pullback Buy";
+  else if(d.dnTrend&&d.volr>=1.5&&d.chg>=3) setup="Oversold Bounce";
+  else if(d.dnTrend&&d.rsi!=null&&d.rsi<40&&(d.bullPat||d.chg>0)) setup="Reversal Watch";
+  else if(d.upTrend) setup="Trend Continuation";
+  else setup="Neutral / No setup";
+  return {score:clampScore(s), why, setup};
+}
+
+function scoreSwing(d){
+  // Weekly swing: reward sustained trend + pullback entries; volume only as confirmation.
+  let s=0; const why=[];
+  let t=0;
+  if(d.stacked){t+=12; why.push(["+12","MA5>MA20>MA50 stacked uptrend"]);}
+  if(d.ma50&&d.close>d.ma50){t+=8; why.push(["+8","Above MA50 (medium-term up)"]);}
+  if(d.ma20slopeUp){t+=10; why.push(["+10","MA20 sloping up"]);}
+  s+=Math.min(30,t);
+  let mo=0;
+  if(d.roc20>0){const x=Math.min(15,d.roc20*0.6); mo+=x; why.push(["+"+x.toFixed(0),"20-day momentum +"+d.roc20.toFixed(1)+"%"]);}
+  if(d.rangePos>=0.4&&d.rangePos<=0.9){mo+=10; why.push(["+10","Upper half of 3-month range"]);}
+  else if(d.rangePos>0.9){mo+=4;}
+  s+=Math.min(25,mo);
+  let r=0;
+  if(d.rsi!=null){
+    if(d.upTrend&&d.rsi>=40&&d.rsi<=58){r=20; why.push(["+20","RSI "+d.rsi.toFixed(0)+" — pullback entry in uptrend"]);}
+    else if(d.rsi>58&&d.rsi<=68){r=12; why.push(["+12","RSI "+d.rsi.toFixed(0)+" — trending"]);}
+    else if(d.rsi>68&&d.rsi<=78){r=5;}
+    else if(d.rsi>78){r=0; why.push(["+0","RSI "+d.rsi.toFixed(0)+" — extended"]);}
+    else if(d.rsi<40&&d.upTrend){r=8; why.push(["+8","RSI "+d.rsi.toFixed(0)+" — deep dip in uptrend"]);}
+    else r=4;
+  } s+=r;
+  if(d.macd){ if(d.macd.hist>0&&d.macd.macd>d.macd.signal){s+=15; why.push(["+15","MACD bullish"]);} else if(d.macd.hist>0){s+=8; why.push(["+8","MACD histogram rising"]);} }
+  if(d.volr>=1.2){s+=10;} else if(d.volr>=0.8){s+=6;} else s+=3;
+  if(d.bullPat){s+=5;} else if(d.bearPat){s-=4;}
+  let setup;
+  if(d.dnTrend) setup="Avoid – Downtrend";
+  else if(d.upTrend&&d.ma20slopeUp&&d.rsi!=null&&d.rsi>=40&&d.rsi<=58&&d.close<=d.ma20*1.07) setup="Swing Buy – Pullback";
+  else if((d.breakout||d.nearHigh)&&d.upTrend&&d.volr>=1.2) setup="Swing Buy – Breakout";
+  else if(d.upTrend&&d.rsi!=null&&d.rsi>78) setup="Uptrend – Extended";
+  else if(d.upTrend) setup="Uptrend – Hold";
+  else if(d.rangePos<0.4&&d.atrPct<3&&d.macd&&d.macd.hist>0) setup="Base / Accumulation";
+  else setup="Neutral / No setup";
+  return {score:clampScore(s), why, setup};
+}
+
+function scoreScalp(d){
+  // Intraday (buy AM / sell EOD): reward liquidity + volatility + today's strength.
+  // NOTE: ranked from DAILY bars - this finds likely movers, it can't time the open.
+  let s=0; const why=[];
+  let li=0;
+  if(d.valBn>=50){li=25;} else if(d.valBn>=20){li=18;} else if(d.valBn>=10){li=12;} else if(d.valBn>=5){li=6;}
+  why.push([(li>=12?"+":"")+li,"Liquidity "+d.valBn.toFixed(1)+"bn/day"]); s+=li;
+  let vo=0;
+  if(d.avgRangePct>=5){vo=25;} else if(d.avgRangePct>=3.5){vo=18;} else if(d.avgRangePct>=2.5){vo=12;} else if(d.avgRangePct>=1.5){vo=6;} else vo=2;
+  why.push(["+"+vo,"Avg daily range "+d.avgRangePct.toFixed(1)+"%"]); s+=vo;
+  let p=0;
+  if(d.volr>=2){p+=15; why.push(["+15","Volume "+d.volr.toFixed(1)+"× — active today"]);}
+  else if(d.volr>=1.5){p+=10; why.push(["+10","Volume "+d.volr.toFixed(1)+"× today"]);}
+  else if(d.volr>=1){p+=5;}
+  if(d.closePos>=0.7){p+=10; why.push(["+10","Closed near day high (strong)"]);}
+  else if(d.closePos>=0.5){p+=5;}
+  s+=Math.min(25,p);
+  let mo=0;
+  if(d.chg>0) mo+=Math.min(10,d.chg*1.5);
+  if(d.roc5>0) mo+=Math.min(5,d.roc5);
+  if(mo>0) why.push(["+"+Math.round(mo),"Up "+d.chg.toFixed(1)+"% today + recent momentum"]);
+  s+=Math.min(15,mo);
+  if(d.rsi!=null){ if(d.rsi>=45&&d.rsi<=72){s+=10;} else if(d.rsi>85){s+=0; why.push(["+0","RSI "+d.rsi.toFixed(0)+" — too hot to chase"]);} else s+=4; }
+  const liquid=d.valBn>=10, movey=d.avgRangePct>=2.5;
+  let setup;
+  if(!liquid||d.avgRangePct<1.5) setup="Avoid – Too thin/quiet";
+  else if(liquid&&movey&&d.volr>=1.5&&d.closePos>=0.6&&d.chg>0) setup="Scalp – Momentum";
+  else if(liquid&&movey) setup="Scalp – Volatile mover";
+  else setup="Watch";
+  return {score:clampScore(s), why, setup};
+}
+
+function riskLevels(profile, close, atrV, l, n){
+  let stopMult,t1Mult,t2Mult,bars;
+  if(profile==="swing"){ stopMult=2; t1Mult=3; t2Mult=5; bars=10; }
+  else if(profile==="scalp"){ stopMult=0.8; t1Mult=0.8; t2Mult=1.5; bars=1; }
+  else { stopMult=1.5; t1Mult=1.5; t2Mult=3; bars=5; }
+  const swingLow=Math.min(...l.slice(Math.max(0,n-bars)));
+  const entry=close;
+  const stop=Math.max(swingLow, close-stopMult*atrV);
+  const risk=entry-stop;
+  return {entry:+entry.toFixed(0), stop:+stop.toFixed(0),
+    t1:+(entry+t1Mult*atrV).toFixed(0), t2:+(entry+t2Mult*atrV).toFixed(0),
+    rr: risk>0?((entry+t2Mult*atrV-entry)/risk):0};
+}
+
 /* ---------------- Core scoring ---------------- */
-function analyze(sym,name,sector,bars){
+function analyze(sym,name,sector,bars,profile){
+  profile=profile||"daily";
   const {o,h,l,c,v}=bars;
   const n=c.length; if(n<20) return null;
   const close=c[n-1], prev=c[n-2], open=o[n-1];
@@ -298,65 +433,37 @@ function analyze(sym,name,sector,bars){
   const stacked=ma5>ma20 && ma20>ma50;
   const breakout=close>=hi20;
 
-  let s=0; const why=[];
-  let mom=0;
-  if(breakout){mom+=14; why.push(["+14","Broke 20-day high ("+fmt(hi20)+") — fresh breakout"]);}
-  if(roc5>0){const x=Math.min(10,roc5*1.2); mom+=x; why.push(["+"+x.toFixed(0),"5-day momentum +"+roc5.toFixed(1)+"%"]);}
-  mom+=Math.min(6,aboveMA*2); if(aboveMA) why.push(["+"+(aboveMA*2),"Above "+aboveMA+" key MA(s)"]);
-  s+=Math.min(30,mom);
-  let vol=0;
-  if(volr>=3){vol=20; why.push(["+20","Volume "+volr.toFixed(1)+"× the 20d avg — heavy interest"]);}
-  else if(volr>=2){vol=15; why.push(["+15","Volume "+volr.toFixed(1)+"× avg"]);}
-  else if(volr>=1.4){vol=9; why.push(["+9","Volume "+volr.toFixed(1)+"× avg"]);}
-  else if(volr>=1){vol=4;}
-  s+=vol;
-  let tr=0;
-  if(stacked){tr+=12; why.push(["+12","MA5>MA20>MA50 — clean uptrend stack"]);}
-  if(ma20&&close>ma20){tr+=8;}
-  s+=Math.min(20,tr);
-  let r=0;
-  if(rsiV!=null){
-    if(rsiV>=50&&rsiV<=68){r=10; why.push(["+10","RSI "+rsiV.toFixed(0)+" — healthy momentum zone"]);}
-    else if(rsiV>68&&rsiV<=80){r=5;}
-    else if(rsiV>80){r=0; why.push(["+0","RSI "+rsiV.toFixed(0)+" — overbought, chase risk"]);}
-    else if(rsiV>=40&&rsiV<50){r=6; why.push(["+6","RSI "+rsiV.toFixed(0)+" — pullback zone"]);}
-    else if(rsiV<30){r=4; why.push(["+4","RSI "+rsiV.toFixed(0)+" — oversold, reversal context"]);}
-  }
-  s+=r;
-  if(m){ if(m.hist>0&&m.macd>m.signal){s+=10; why.push(["+10","MACD bullish (hist>0)"]);}
-         else if(m.hist>0){s+=5;} }
-  if(bullPat){s+=10; why.push(["+10","Bullish candle: "+pats.filter(p=>!/Bearish|Shooting|Doji/.test(p)).join(", ")]);}
-  else if(bearPat){s-=6; why.push(["-6","Bearish candle: "+pats.join(", ")]);}
-  if(gap>3){s+=3; why.push(["+3","Gapped up "+gap.toFixed(1)+"%"]);}
-
-  s=Math.max(0,Math.min(100,Math.round(s)));
-
-  const nearHigh=close>=hi20*0.985;
-  const upTrend=ma50&&close>ma50&&ma20&&close>ma20&&ma5>ma20;
-  const dnTrend=ma50&&close<ma50;
-  let setup;
-  if(rsiV!=null && rsiV>80) setup="Overbought – caution";
-  else if(breakout && volr>=1.5 && aboveMA>=2) setup="Momentum Breakout";
-  else if(nearHigh && volr>=1.4 && aboveMA>=2) setup="Breakout Watch";
-  else if(upTrend && rsiV>=42 && rsiV<58 && close<=ma20*1.06 && close>=ma20*0.94) setup="Pullback Buy";
-  else if(dnTrend && volr>=1.5 && chg>=3) setup="Oversold Bounce";
-  else if(dnTrend && rsiV!=null && rsiV<40 && (bullPat||chg>0)) setup="Reversal Watch";
-  else if(upTrend) setup="Trend Continuation";
-  else setup="Neutral / No setup";
-
+  // ---- extra indicators used by the profile scorers ----
+  const roc20 = n>21 ? (close-c[n-21])/c[n-21]*100 : 0;
+  const ma20prev = n>=25 ? sma(c.slice(0,n-5),20) : ma20;
+  const ma20slopeUp = !!(ma20 && ma20prev && ma20>ma20prev);
   const atrV=a||close*0.03;
-  const entry=close;
-  const swingLow=Math.min(...l.slice(Math.max(0,n-5)));
-  const stop=Math.max(swingLow, +(close-1.5*atrV).toFixed(2));
-  const risk=entry-stop;
-  const t1=+(entry+1.5*atrV).toFixed(0);
-  const t2=+(entry+3*atrV).toFixed(0);
-  const rr=risk>0?((t2-entry)/risk):0;
+  const atrPct=atrV/close*100;
+  let arSum=0,arN=0; for(let i=Math.max(1,n-10);i<n;i++){ arSum+=(h[i]-l[i])/c[i]*100; arN++; }
+  const avgRangePct=arN?arSum/arN:atrPct;
+  const dayRng=(h[n-1]-l[n-1])||1e-9;
+  const closePos=(close-l[n-1])/dayRng;
+  const hi3=Math.max(...c), lo3=Math.min(...c);
+  const rangePos=(hi3-lo3)?(close-lo3)/(hi3-lo3):0.5;
+  const nearHigh=close>=hi20*0.985;
+  const upTrend=!!(ma50&&close>ma50&&ma20&&close>ma20&&ma5>ma20);
+  const dnTrend=!!(ma50&&close<ma50);
+  const valBn=valueTraded/1e9;
+
+  const ind={close,prev,chg,open,ma5,ma20,ma50,ma20slopeUp,volr,valueTraded,valBn,
+    rsi:rsiV,macd:m,atrV,atrPct,avgRangePct,closePos,rangePos,
+    hi20,lo20,roc5,roc20,gap,pats,bullPat,bearPat,aboveMA,stacked,breakout,nearHigh,upTrend,dnTrend};
+
+  const sc = profile==="swing" ? scoreSwing(ind)
+           : profile==="scalp" ? scoreScalp(ind)
+           : scoreDaily(ind);
+  const lv = riskLevels(profile, close, atrV, l, n);
 
   return {sym,name,sector,close,prev,chg,ma5,ma20,ma50,volr,valueTraded,
-    rsi:rsiV,macd:m,atr:atrV,hi20,lo20,roc5,gap,pats,score:s,setup,
-    entry,stop,t1,t2,rr,why,
-    ohlc:{o:o.slice(-60),h:h.slice(-60),l:l.slice(-60),c:c.slice(-60)},bandar:0};
+    rsi:rsiV,macd:m,atr:atrV,hi20,lo20,roc5,gap,pats,
+    score:sc.score, setup:sc.setup, why:sc.why,
+    entry:lv.entry, stop:lv.stop, t1:lv.t1, t2:lv.t2, rr:lv.rr,
+    ohlc:{o:o.slice(-60),h:h.slice(-60),l:l.slice(-60),c:c.slice(-60)}, bandar:0, profile};
 }
 
 /* ---------------- Data fetching ---------------- */
@@ -424,12 +531,13 @@ async function runSnapshot(){
       'For now pick a Live mode, or use "Load demo data" / manual input.';
     return;
   }
-  RESULTS=[];
+  RAWBARS={};
   const names={}; UNIVERSE.forEach(([s,n,sec])=>names[s]=[n,sec]);
   for(const sym in (snap.bars||{})){
-    const b=snap.bars[sym]; const nm=names[sym]||[sym,"Other"];
-    try{ const a=analyze(sym,nm[0],nm[1],b); if(a){a.bandar=0;applyBandarOne(a);RESULTS.push(a);} }catch(e){}
+    const nm=names[sym]||[sym,"Other"];
+    RAWBARS[sym]={bars:snap.bars[sym], name:nm[0], sector:nm[1]};
   }
+  rescore();
   const age=snap.generatedAt?new Date(snap.generatedAt):null;
   if(RESULTS.length===0){
     st.innerHTML='<span class="err">Snapshot loaded but no usable bars.</span> The update Action may not have run yet.';
@@ -437,7 +545,6 @@ async function runSnapshot(){
     st.innerHTML='Snapshot · '+RESULTS.length+' scored · <b>data as of '+(age?age.toLocaleString():'?')+'</b>'+
       (snap.failed?(' · '+snap.failed+' tickers missing'):'');
   }
-  buildSectorFilter(); render();
 }
 
 async function testConnection(){
@@ -457,12 +564,15 @@ async function testConnection(){
 
 /* ---------------- State & rendering ---------------- */
 let RESULTS=[], sortKey="score", sortDir=-1, bandarMap={};
+let RAWBARS={}, PROFILE="daily";   // RAWBARS keeps fetched bars so we can re-score on profile switch without re-fetching
 
 function fmt(n){ if(n==null||isNaN(n)) return "–"; return Math.round(n).toLocaleString("en-US"); }
 function fmt1(n){ return n==null||isNaN(n)?"–":n.toFixed(1); }
 function scoreColor(s){ return s>=75?"var(--green)":s>=60?"var(--cyan)":s>=45?"var(--yellow)":"var(--muted)"; }
 function badge(setup){
-  const map={"Momentum Breakout":"b-break","Breakout Watch":"b-break","Pullback Buy":"b-pull","Trend Continuation":"b-pull","Oversold Bounce":"b-rev","Reversal Watch":"b-rev","Overbought – caution":"b-over","Neutral / No setup":"b-watch"};
+  const map={"Momentum Breakout":"b-break","Breakout Watch":"b-break","Pullback Buy":"b-pull","Trend Continuation":"b-pull","Oversold Bounce":"b-rev","Reversal Watch":"b-rev","Overbought – caution":"b-over","Neutral / No setup":"b-watch",
+    "Swing Buy – Pullback":"b-pull","Swing Buy – Breakout":"b-break","Uptrend – Hold":"b-pull","Uptrend – Extended":"b-over","Base / Accumulation":"b-rev","Avoid – Downtrend":"b-watch",
+    "Scalp – Momentum":"b-break","Scalp – Volatile mover":"b-pull","Watch":"b-watch","Avoid – Too thin/quiet":"b-watch"};
   return '<span class="badge '+(map[setup]||"b-watch")+'">'+setup+'</span>';
 }
 
@@ -549,7 +659,7 @@ function showDetail(r,lots){
       </ul></div>
     </div>
     <div><div class="chartbox"><canvas id="spark"></canvas></div>
-      <div class="mut" style="font-size:11px;margin-top:6px">Last 60 daily candles (green up / red down) with MA20. Confirm on your own chart before entry.</div>
+      <div class="mut" style="font-size:11px;margin-top:6px">${HORIZON[r.profile]||""} Last 60 daily candles (green up / red down) with MA20.</div>
     </div>
   </div>`;
   drawSpark(r);
@@ -600,13 +710,13 @@ async function run(){
   if(mode==="snapshot") return runSnapshot();
   const bar=document.getElementById("progressBar"), pw=document.getElementById("progress");
   pw.style.display="block"; bar.style.width="0";
-  const st=document.getElementById("statusTxt"); RESULTS=[]; let done=0, fail=0;
+  const st=document.getElementById("statusTxt"); RAWBARS={}; let done=0, fail=0;
   const conc=5, queue=[...UNIVERSE];
   st.textContent="Fetching "+UNIVERSE.length+" tickers…";
   async function worker(){
     while(queue.length){
       const [sym,name,sec]=queue.shift();
-      try{ const bars=await fetchBars(sym,mode); const a=analyze(sym,name,sec,bars); if(a){a.bandar=0;applyBandarOne(a);RESULTS.push(a);} }
+      try{ const bars=await fetchBars(sym,mode); RAWBARS[sym]={bars,name,sector:sec}; }
       catch(e){ fail++; }
       done++; bar.style.width=(done/UNIVERSE.length*100)+"%";
       st.textContent="Scanned "+done+"/"+UNIVERSE.length+(fail?(" · "+fail+" failed"):"");
@@ -614,7 +724,8 @@ async function run(){
   }
   await Promise.all(Array.from({length:conc},worker));
   pw.style.display="none";
-  if(RESULTS.length===0){
+  rescore();
+  if(Object.keys(RAWBARS).length===0){
     st.innerHTML='<span class="err">No data fetched ('+(lastErr||'all sources failed')+').</span> '+
       'The live feed is being blocked. Click <b>Test connection</b> to diagnose, switch Data mode, or use "Load demo data" / manual input below. '+
       'Make sure you opened this file in Chrome — not the in-app preview pane (its network is sandboxed).';
@@ -629,6 +740,27 @@ function buildSectorFilter(){
   const secs=[...new Set(RESULTS.map(r=>r.sector))].sort();
   sel.innerHTML='<option value="">All sectors</option>'+secs.map(s=>`<option>${s}</option>`).join("");
   sel.value=cur;
+}
+function buildSetupFilter(){
+  const sel=document.getElementById("fSetup"); const cur=sel.value;
+  const sets=[...new Set(RESULTS.map(r=>r.setup))].sort();
+  sel.innerHTML='<option value="">All setups</option>'+sets.map(s=>`<option>${s}</option>`).join("");
+  sel.value=cur;
+}
+const NOTES={
+  daily:"Daily profile: momentum + volume + trend + candlestick. Levels are ATR-based for an intraday-to-few-day hold.",
+  swing:"Swing profile: rewards sustained uptrends and pullback entries; wider ATR stops/targets for a multi-day to ~2-week hold.",
+  scalp:"Scalp profile: ranks the most liquid, volatile, strong-closing names — likely intraday movers. ⚠ Built from DAILY bars, so it can't time the open or see bid/ask. Confirm the morning move live; exit by session close."
+};
+const HORIZON={daily:"Hold: intraday → a few days.",swing:"Hold: days → ~2 weeks (wider stop).",scalp:"Hold: same day — exit by session close."};
+// Re-score everything in RAWBARS under the current PROFILE (no re-fetch needed)
+function rescore(){
+  RESULTS=[];
+  for(const sym in RAWBARS){ const x=RAWBARS[sym];
+    try{ const a=analyze(sym,x.name,x.sector,x.bars,PROFILE); if(a){a.bandar=0;applyBandarOne(a);RESULTS.push(a);} }catch(e){}
+  }
+  document.getElementById("note").textContent=NOTES[PROFILE]||"";
+  buildSectorFilter(); buildSetupFilter(); render();
 }
 
 /* ---------------- Bandarmology boost ---------------- */
@@ -646,7 +778,7 @@ document.getElementById("applyBandar").onclick=()=>{ parseBandar(); RESULTS.forE
 /* ---------------- Manual price scoring ---------------- */
 document.getElementById("runManual").onclick=()=>{
   const lines=document.getElementById("manualBox").value.trim().split("\n").filter(x=>x.trim());
-  RESULTS=[];
+  RAWBARS={};
   lines.forEach(line=>{
     const p=line.split(",").map(x=>x.trim());
     const sym=p[0].toUpperCase(); const u=UNIVERSE.find(x=>x[0]===sym);
@@ -656,31 +788,35 @@ document.getElementById("runManual").onclick=()=>{
     const h=Array(25).fill(close); h[24]=high;
     const l=Array(25).fill(close); l[24]=low;
     const v=Array(25).fill(vol*0.6); v[24]=vol;
-    const a=analyze(sym,u?u[1]:sym,u?u[2]:"Manual",{o,h,l,c,v});
-    if(a){a.bandar=0;applyBandarOne(a);RESULTS.push(a);}
+    RAWBARS[sym]={bars:{o,h,l,c,v}, name:u?u[1]:sym, sector:u?u[2]:"Manual"};
   });
+  rescore();
   document.getElementById("statusTxt").textContent="Manual scoring · "+RESULTS.length+" rows (limited: no full history)";
-  buildSectorFilter(); render();
 };
 
 /* ---------------- Demo data (offline preview) ---------------- */
 document.getElementById("loadSample").onclick=()=>{
-  RESULTS=[]; const rnd=(a,b)=>a+Math.random()*(b-a);
+  RAWBARS={}; const rnd=(a,b)=>a+Math.random()*(b-a);
   UNIVERSE.slice(0,40).forEach(([sym,name,sec])=>{
     const base=rnd(500,12000); const trend=rnd(-0.02,0.04);
     const c=[],o=[],h=[],l=[],v=[]; let p=base;
     for(let i=0;i<60;i++){ p=p*(1+trend+rnd(-0.03,0.03)); const op=p*(1+rnd(-0.01,0.01));
       const hi=Math.max(p,op)*(1+rnd(0,0.02)), lo=Math.min(p,op)*(1-rnd(0,0.02));
       c.push(p);o.push(op);h.push(hi);l.push(lo);v.push(rnd(5e6,3e8)*(i>56?rnd(1,3):1)); }
-    const a=analyze(sym,name,sec,{o,h,l,c,v}); if(a){a.bandar=0;RESULTS.push(a);}
+    RAWBARS[sym]={bars:{o,h,l,c,v},name,sector:sec};
   });
+  rescore();
   document.getElementById("statusTxt").innerHTML='<span style="color:var(--yellow)">DEMO data (random) — for layout preview only. Run the screener for real prices.</span>';
-  buildSectorFilter(); render();
 };
 
 /* ---------------- wiring ---------------- */
 document.getElementById("run").onclick=run;
 document.getElementById("testConn").onclick=testConnection;
+document.getElementById("profile").addEventListener("change",e=>{
+  PROFILE=e.target.value;
+  if(Object.keys(RAWBARS).length) rescore();
+  else document.getElementById("note").textContent=NOTES[PROFILE]||"";
+});
 ["minScore","minLiq","fSetup","fSector","capital","riskpct"].forEach(id=>
   document.getElementById(id).addEventListener("change",render));
 document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
@@ -690,14 +826,14 @@ document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
 });
 document.getElementById("foot").innerHTML=
   "Universe: "+UNIVERSE.length+" liquid IDX names across all sectors (edit tickers.json to add/remove). "+
-  "Scoring: momentum 30 · volume surge 20 · trend 20 · RSI 10 · MACD 10 · candlestick 10 · gap/bandar bonus. "+
-  "Setups: Momentum Breakout, Breakout Watch, Pullback Buy, Trend Continuation, Oversold Bounce, Reversal Watch, Overbought, Neutral. "+
-  "Risk: stop = max(5-day swing low, close − 1.5×ATR); targets at 1.5× and 3× ATR; lots sized to your capital × risk%. "+
+  "Three profiles re-score the same data: Daily (momentum+volume+trend+RSI+MACD+candle), Swing (sustained trend + pullback entries), Scalp (liquidity + volatility + strong close). "+
+  "Risk levels & hold horizon adapt to the profile — Scalp = tight, same-day; Daily = 1.5×ATR; Swing = wider 2×ATR stop, 3–5×ATR targets. Lots sized to your capital × risk%. "+
   "Data: Yahoo Finance .JK daily bars, delayed. No broker summary in free data — use the bandarmology box for foreign-flow input.";
 
 // Load canonical ticker list; when hosted (http/https) auto-run the snapshot and refresh it every 5 min.
 (async function init(){
   await loadTickers();
+  document.getElementById("note").textContent=NOTES[PROFILE]||"";
   if(location.protocol.indexOf("http")===0){ run(); }
 })();
 setInterval(()=>{ if(document.getElementById("mode").value==="snapshot") runSnapshot(); }, 5*60*1000);
