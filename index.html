@@ -146,6 +146,7 @@
       <input type="number" id="maxRisk" value="0" min="0" step="0.5">
     </div>
     <button id="run">⟳ Run Screener</button>
+    <button id="briefBtn" style="background:#1f6feb">📋 Daily Brief</button>
     <button class="ghost" id="testConn">Test connection</button>
     <button class="ghost" id="loadSample">Load demo data</button>
     <span id="statusTxt" class="sub"></span>
@@ -180,6 +181,8 @@
       <tbody id="tbody"></tbody>
     </table>
   </div>
+
+  <div class="panel-detail" id="brief"></div>
 
   <div class="panel-detail" id="detail"></div>
 
@@ -604,6 +607,7 @@ async function runSnapshot(){
   }
   rescore();
   showRegime(snap.index);
+  LASTINDEX=snap.index||null; LASTASOF=snap.generatedAt||null;
   const age=snap.generatedAt?new Date(snap.generatedAt):null;
   if(RESULTS.length===0){
     st.innerHTML='<span class="err">Snapshot loaded but no usable bars.</span> The update Action may not have run yet.';
@@ -632,6 +636,7 @@ async function testConnection(){
 let RESULTS=[], sortKey="score", sortDir=-1, bandarMap={};
 let RAWBARS={}, PROFILE="daily";   // RAWBARS keeps fetched bars so we can re-score on profile switch without re-fetching
 let CHASEGUARD=true;               // dock points for stocks already extended on the day (avoid chasing the pop)
+let LASTINDEX=null, LASTASOF=null; // IHSG regime + snapshot time, for the Daily Brief
 
 function fmt(n){ if(n==null||isNaN(n)) return "–"; return Math.round(n).toLocaleString("en-US"); }
 function fmt1(n){ return n==null||isNaN(n)?"–":n.toFixed(1); }
@@ -883,8 +888,80 @@ document.getElementById("loadSample").onclick=()=>{
   document.getElementById("statusTxt").innerHTML='<span style="color:var(--yellow)">DEMO data (random) — for layout preview only. Run the screener for real prices.</span>';
 };
 
+/* ---------------- Daily Brief (auto analysis, encodes the backtest-derived logic) ---------------- */
+const BT_TRADABLE  = { daily:["Momentum Breakout","Pullback Buy"], swing:["Uptrend – Hold","Swing Buy – Breakout","Swing Buy – Pullback"] };
+const BT_SECONDARY = { daily:["Trend Continuation"], swing:[] };
+const BT_AVOID = ["Oversold Bounce","Avoid – Downtrend","Avoid – Too thin/quiet","Overbought – caution","Breakout Watch","Uptrend – Extended","Base / Accumulation","Reversal Watch","Scalp – Momentum","Scalp – Volatile mover"];
+
+function lotsFor(r){
+  const cap=+document.getElementById("capital").value, rp=+document.getElementById("riskpct").value/100;
+  const risk=r.entry-r.stop; return risk>0?Math.max(0,Math.floor((cap*rp)/risk/100)):0;
+}
+function briefWhy(r){
+  const p=[]; const s=r.setup;
+  if(s==="Momentum Breakout") p.push("fresh 20-day high on "+fmt1(r.volr)+"× volume, above its MAs");
+  else if(s==="Pullback Buy") p.push("uptrend pullback near MA20 (RSI "+fmt1(r.rsi)+")");
+  else if(s==="Swing Buy – Breakout") p.push("breaking out within an uptrend");
+  else if(s==="Swing Buy – Pullback") p.push("dip-buy inside an uptrend");
+  else if(s==="Uptrend – Hold") p.push("riding an established uptrend");
+  else if(s==="Trend Continuation") p.push("trending up (secondary — ~breakeven historically)");
+  if(r.accLabel==="Accumulation") p.push("accumulation"); else if(r.accLabel==="Distribution") p.push("⚠ distribution");
+  if(r.foreign>0) p.push("foreign net-buy"); else if(r.foreign<0) p.push("foreign net-sell");
+  return p.join(", ");
+}
+function candLine(r){
+  return `<li style="margin:7px 0"><b class="tick">${r.sym}</b> <span class="mut">${r.sector}</span> · ${badge(r.setup)} · score <b style="color:${scoreColor(r.score)}">${r.score}</b> · <span class="${r.chg>=0?'pos':'neg'}">${r.chg>=0?'+':''}${fmt1(r.chg)}%</span><br>`+
+    `<span class="mut" style="font-size:11.5px">${briefWhy(r)}. &nbsp;Buy ~${fmt(r.entry)} · stop ${fmt(r.stop)} · trail MA${r.trailMA} · target ${fmt(r.t2)} · ≈${lotsFor(r)} lots</span></li>`;
+}
+function generateBrief(){
+  const el=document.getElementById("brief"); el.style.display="block";
+  if(!RESULTS.length){ el.innerHTML='<div class="mut">Run the screener first, then click Daily Brief.</div>'; el.scrollIntoView({behavior:"smooth",block:"nearest"}); return; }
+  const prof=PROFILE;
+  const adv=RESULTS.filter(r=>r.chg>0).length, dec=RESULTS.filter(r=>r.chg<0).length;
+  const ok=r=> r.score>=70 && r.ma50 && r.close>r.ma50;
+  const prime =RESULTS.filter(r=>BT_TRADABLE[prof].includes(r.setup) && ok(r)).sort((a,b)=>b.score-a.score);
+  const second=RESULTS.filter(r=>BT_SECONDARY[prof].includes(r.setup) && ok(r)).sort((a,b)=>b.score-a.score).slice(0,3);
+  const watch =RESULTS.filter(r=> r.score>=72 && !BT_TRADABLE[prof].includes(r.setup) && !BT_SECONDARY[prof].includes(r.setup) && !BT_AVOID.includes(r.setup)).sort((a,b)=>b.score-a.score).slice(0,3);
+  const avoid =RESULTS.filter(r=>BT_AVOID.includes(r.setup)).sort((a,b)=>b.score-a.score).slice(0,6);
+
+  let riskOn=null, regLine;
+  if(LASTINDEX){ riskOn=LASTINDEX.regimeUp; regLine=(riskOn?"🟢 RISK-ON":"🔴 RISK-OFF")+" — IHSG "+Math.round(LASTINDEX.close).toLocaleString("en-US")+" ("+(LASTINDEX.chg>=0?"+":"")+LASTINDEX.chg+"%), "+(riskOn?"above":"below")+" its MA50."; }
+  else regLine="⚪ IHSG regime not loaded — re-run the data pipeline so it shows; treat today with extra caution.";
+
+  let verdict, vColor;
+  if(riskOn===false){ verdict="STAND ASIDE — market is risk-off. The backtest loses on longs in risk-off tape. Manage existing positions only; no new buys."; vColor="var(--red)"; }
+  else if(prime.length===0){ verdict="NO CLEAN TRADE — none of the proven setups ("+BT_TRADABLE[prof].join(", ")+") are on the board. Waiting is the correct move; 'no trade' is a position."; vColor="var(--yellow)"; }
+  else { verdict=prime.length+" actionable setup"+(prime.length>1?"s":"")+" matching the backtest's profitable buckets. Trade only these, size small, follow the exit plan."; vColor="var(--green)"; }
+
+  let h=`<div style="font-size:16px;font-weight:700">📋 Daily Brief — ${prof.toUpperCase()} profile</div>`;
+  h+=`<div class="mut" style="font-size:11px;margin-bottom:10px">${LASTASOF?("data as of "+new Date(LASTASOF).toLocaleString()):"live data"}</div>`;
+  h+=`<div style="background:var(--panel2);border:1px solid var(--border);border-left:4px solid ${vColor};border-radius:6px;padding:10px 12px;margin-bottom:12px;font-weight:600">${verdict}</div>`;
+  h+=`<p style="margin:6px 0"><b>Regime:</b> ${regLine}</p>`;
+  h+=`<p style="margin:6px 0"><b>Breadth:</b> <span class="pos">${adv}▲</span> / <span class="neg">${dec}▼</span> of ${RESULTS.length} scanned. ${dec>adv?'⚠ More decliners — defensive tape.':(adv>dec*4?'⚠ Broad green — watch for relief-bounce traps.':'Mixed.')}</p>`;
+  h+=`<div style="margin-top:10px"><b style="color:var(--green)">✅ Actionable — proven setups (score ≥70, above MA50):</b>`;
+  h+= prime.length? `<ul style="margin:6px 0 0;padding-left:18px">${prime.slice(0,8).map(candLine).join("")}</ul>` : `<div class="mut" style="margin:4px 0">None today. Don't force one.</div>`;
+  h+=`</div>`;
+  if(second.length){ h+=`<div style="margin-top:10px"><b style="color:var(--cyan)">➕ Secondary — Trend Continuation (~breakeven; only with accumulation):</b><ul style="margin:6px 0 0;padding-left:18px">${second.map(candLine).join("")}</ul></div>`; }
+  h+=`<div style="margin-top:10px"><b style="color:var(--accent)">👀 Watch — top score, no clean trigger yet:</b>`;
+  h+= watch.length? `<ul style="margin:6px 0 0;padding-left:18px">${watch.map(r=>`<li style="margin:5px 0"><b class="tick">${r.sym}</b> <span class="mut">${r.sector}</span> · score ${r.score} · ${badge(r.setup)}<br><span class="mut" style="font-size:11.5px">Strong but no setup. Act only if it forms a ${prof==="swing"?"Swing Buy (breakout/pullback in an uptrend)":"Momentum Breakout (new 20-day high, ≥1.5× vol, above MAs)"}. Otherwise leave it.</span></li>`).join("")}</ul>` : `<div class="mut" style="margin:4px 0">None.</div>`;
+  h+=`</div>`;
+  h+=`<div style="margin-top:10px"><b style="color:var(--red)">⛔ Avoid — high on the board but backtest-negative (do NOT chase):</b>`;
+  h+= avoid.length? `<div class="mut" style="margin:4px 0">${avoid.map(r=>r.sym+" ("+r.setup+", "+(r.chg>=0?'+':'')+fmt1(r.chg)+"%)").join(" · ")}</div>` : `<div class="mut" style="margin:4px 0">None.</div>`;
+  h+=`</div>`;
+  h+=`<div style="margin-top:12px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:12px;line-height:1.55">`+
+     `<b>Execution rules (from the backtest):</b><br>`+
+     `• Risk ~${document.getElementById("riskpct").value}% per trade; enter near the open.<br>`+
+     `• Exit = trend-trail: hold while above MA10 (Daily) / MA20 (Swing); exit on a daily close below it. Hard disaster stop as shown.<br>`+
+     `• Win rate is low (~27–30%) by design — expect many small losses and let the few winners run. Don't size up to win more often.<br>`+
+     `• ${prof==="swing"?"Swing is the more robust profile (PF 1.30).":"Daily edge is thinner (PF 1.12) — be extra selective."}`+
+     `</div>`;
+  h+=`<div class="mut" style="margin-top:10px;font-size:11px">Auto-generated from the live screen + backtest findings — decision-support, not financial advice. Confirm price, volume and bid/ask in your terminal. The edge is regime-dependent and runs lower live than backtested (survivorship bias).</div>`;
+  el.innerHTML=h; el.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
 /* ---------------- wiring ---------------- */
 document.getElementById("run").onclick=run;
+document.getElementById("briefBtn").onclick=generateBrief;
 document.getElementById("testConn").onclick=testConnection;
 document.getElementById("profile").addEventListener("change",e=>{
   PROFILE=e.target.value;
