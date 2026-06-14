@@ -88,7 +88,6 @@
       <select id="profile">
         <option value="daily">Daily (intraday→few days)</option>
         <option value="swing">Swing (days→2 weeks)</option>
-        <option value="scalp">Scalp (buy AM / sell EOD)</option>
       </select>
     </div>
     <div class="ctl">
@@ -153,6 +152,8 @@
   </div>
 
   <div id="note" class="sub" style="margin:-4px 0 10px"></div>
+
+  <div id="regime" style="display:none;margin:0 0 10px;padding:8px 12px;border-radius:8px;font-weight:600;font-size:12.5px"></div>
 
   <div id="progress"><div id="progressBar"></div></div>
 
@@ -443,17 +444,17 @@ function scoreScalp(d){
 }
 
 function riskLevels(profile, close, atrV, l, n){
-  let stopMult,t1Mult,t2Mult,bars;
-  if(profile==="swing"){ stopMult=2; t1Mult=3; t2Mult=5; bars=10; }
-  else if(profile==="scalp"){ stopMult=0.8; t1Mult=0.8; t2Mult=1.5; bars=1; }
-  else { stopMult=1.5; t1Mult=1.5; t2Mult=3; bars=5; }
-  const swingLow=Math.min(...l.slice(Math.max(0,n-bars)));
+  // Backtest-tuned: WIDE disaster stop + MA trail-exit (ride trends, avoid whipsaw).
+  let stopMult,t1Mult,t2Mult,trailMA;
+  if(profile==="swing"){ stopMult=3.5; t1Mult=3.5; t2Mult=7; trailMA=20; }
+  else if(profile==="scalp"){ stopMult=1; t1Mult=1; t2Mult=2; trailMA=1; }
+  else { stopMult=3; t1Mult=3; t2Mult=6; trailMA=10; }
   const entry=close;
-  const stop=Math.max(swingLow, close-stopMult*atrV);
+  const stop=+(entry-stopMult*atrV).toFixed(0);
   const risk=entry-stop;
-  return {entry:+entry.toFixed(0), stop:+stop.toFixed(0),
+  return {entry:+entry.toFixed(0), stop, trailMA,
     t1:+(entry+t1Mult*atrV).toFixed(0), t2:+(entry+t2Mult*atrV).toFixed(0),
-    rr: risk>0?((entry+t2Mult*atrV-entry)/risk):0};
+    rr: risk>0?((t2Mult*atrV)/risk):0};
 }
 
 /* ---------------- Core scoring ---------------- */
@@ -526,7 +527,7 @@ function analyze(sym,name,sector,bars,profile){
     rsi:rsiV,macd:m,atr:atrV,hi20,lo20,roc5,gap,pats,
     score:sc.score, setup:sc.setup, why:sc.why,
     acc:ac.acc, accLabel:ac.label, accObj:ac, foreign,
-    entry:lv.entry, stop:lv.stop, t1:lv.t1, t2:lv.t2, rr:lv.rr,
+    entry:lv.entry, stop:lv.stop, t1:lv.t1, t2:lv.t2, rr:lv.rr, trailMA:lv.trailMA,
     ohlc:{o:o.slice(-60),h:h.slice(-60),l:l.slice(-60),c:c.slice(-60)}, profile};
 }
 
@@ -602,6 +603,7 @@ async function runSnapshot(){
     RAWBARS[sym]={bars:snap.bars[sym], name:nm[0], sector:nm[1]};
   }
   rescore();
+  showRegime(snap.index);
   const age=snap.generatedAt?new Date(snap.generatedAt):null;
   if(RESULTS.length===0){
     st.innerHTML='<span class="err">Snapshot loaded but no usable bars.</span> The update Action may not have run yet.';
@@ -724,6 +726,7 @@ function showDetail(r,lots){
         <div><div class="k">R:R</div><div class="v">${fmt1(r.rr)}</div></div>
         <div><div class="k">Lots (sugg.)</div><div class="v">${lots}</div></div>
       </div>
+      <div class="sub" style="margin-top:8px">📤 <b>Exit plan:</b> hold while above its <b>MA${r.trailMA}</b>; exit on a daily <b>close below MA${r.trailMA}</b>. Hard disaster stop at <b>${fmt(r.stop)}</b>. <i>(Backtest-tuned: trailing the trend beats tight stops, which get whipsawed.)</i></div>
       <div class="reason"><b>Why it scored ${r.score}:</b><ul>
         ${r.why.map(w=>`<li><b style="color:${w[0][0]==='-'?'var(--red)':'var(--green)'}">${w[0]}</b> ${w[1]}</li>`).join("")}
       </ul></div>
@@ -811,6 +814,18 @@ function buildSectorFilter(){
   sel.innerHTML='<option value="">All sectors</option>'+secs.map(s=>`<option>${s}</option>`).join("");
   sel.value=cur;
 }
+function showRegime(ix){
+  const el=document.getElementById("regime");
+  if(!ix){ el.style.display="none"; return; }
+  const up=ix.regimeUp;
+  el.style.display="block";
+  el.style.background = up?"#0d2818":"#2d1114";
+  el.style.border = "1px solid "+(up?"#1a4d2e":"#5c1f23");
+  el.style.color = up?"#3fb950":"#f85149";
+  el.innerHTML = (up?"● Market RISK-ON":"● Market RISK-OFF")+" — IHSG "+Math.round(ix.close).toLocaleString("en-US")+
+    " ("+(ix.chg>=0?"+":"")+ix.chg+"%), "+(up?"above":"below")+" its MA50 ("+Math.round(ix.ma50).toLocaleString("en-US")+"). "+
+    (up?"Trend tailwind — long setups favoured.":"⚠ Headwind — backtest shows longs lose in risk-off. Size down or stand aside.");
+}
 function buildSetupFilter(){
   const sel=document.getElementById("fSetup"); const cur=sel.value;
   const sets=[...new Set(RESULTS.map(r=>r.setup))].sort();
@@ -890,7 +905,7 @@ document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
 document.getElementById("foot").innerHTML=
   "Universe: "+UNIVERSE.length+" liquid IDX names across all sectors (edit tickers.json to add/remove). "+
   "Three profiles re-score the same data: Daily (momentum+volume+trend+RSI+MACD+candle), Swing (sustained trend + pullback entries), Scalp (liquidity + volatility + strong close). "+
-  "Risk levels & hold horizon adapt to the profile — Scalp = tight, same-day; Daily = 1.5×ATR; Swing = wider 2×ATR stop, 3–5×ATR targets. Lots sized to your capital × risk%. "+
+  "Risk (backtest-tuned): wide disaster stop (3×ATR Daily / 3.5× Swing) + trail-exit on a daily close below MA10/MA20 — rides trends instead of getting whipsawed. Lots sized to your capital × risk%. "+
   "Data: Yahoo Finance .JK daily bars, delayed. No broker summary in free data — use the bandarmology box for foreign-flow input.";
 
 // Load canonical ticker list; when hosted (http/https) auto-run the snapshot and refresh it every 5 min.
