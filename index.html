@@ -134,6 +134,18 @@
       <label>Risk / trade %</label>
       <input type="number" id="riskpct" value="1" min="0.1" step="0.1">
     </div>
+    <div class="ctl">
+      <label>Chase guard</label>
+      <select id="chaseGuard"><option value="on">On</option><option value="off">Off</option></select>
+    </div>
+    <div class="ctl">
+      <label>Above MA50 only</label>
+      <select id="aboveMa50"><option value="no">No</option><option value="yes">Yes</option></select>
+    </div>
+    <div class="ctl">
+      <label>Max stop risk % (0=off)</label>
+      <input type="number" id="maxRisk" value="0" min="0" step="0.5">
+    </div>
     <button id="run">⟳ Run Screener</button>
     <button class="ghost" id="testConn">Test connection</button>
     <button class="ghost" id="loadSample">Load demo data</button>
@@ -504,6 +516,10 @@ function analyze(sym,name,sector,bars,profile){
     if(foreign>0){ sc.score=clampScore(sc.score+fw); sc.why.push(["+"+fw,"Foreign net BUY"]); }
     else { sc.score=clampScore(sc.score-fw); sc.why.push(["-"+fw,"Foreign net SELL"]); } }
 
+  // ---- chase guard: don't reward buying after the pop (penalty grows past +10% on the day) ----
+  if(CHASEGUARD && chg>10){ const f=profile==="scalp"?0.5:0.8; const pen=Math.min(20,Math.round((chg-10)*f));
+    if(pen>0){ sc.score=clampScore(sc.score-pen); sc.why.push(["-"+pen,"Chase guard — already +"+chg.toFixed(1)+"% today"]); } }
+
   const lv = riskLevels(profile, close, atrV, l, n);
 
   return {sym,name,sector,close,prev,chg,ma5,ma20,ma50,volr,valueTraded,
@@ -613,6 +629,7 @@ async function testConnection(){
 /* ---------------- State & rendering ---------------- */
 let RESULTS=[], sortKey="score", sortDir=-1, bandarMap={};
 let RAWBARS={}, PROFILE="daily";   // RAWBARS keeps fetched bars so we can re-score on profile switch without re-fetching
+let CHASEGUARD=true;               // dock points for stocks already extended on the day (avoid chasing the pop)
 
 function fmt(n){ if(n==null||isNaN(n)) return "–"; return Math.round(n).toLocaleString("en-US"); }
 function fmt1(n){ return n==null||isNaN(n)?"–":n.toFixed(1); }
@@ -629,8 +646,12 @@ function applyFilters(){
   const minL=+document.getElementById("minLiq").value*1e9;
   const fs=document.getElementById("fSetup").value;
   const fsec=document.getElementById("fSector").value;
+  const ma50only=document.getElementById("aboveMa50").value==="yes";
+  const maxR=+document.getElementById("maxRisk").value;
   return RESULTS.filter(r=> r.score>=minS && r.valueTraded>=minL
-      && (!fs||r.setup===fs) && (!fsec||r.sector===fsec));
+      && (!fs||r.setup===fs) && (!fsec||r.sector===fsec)
+      && (!ma50only || (r.ma50 && r.close>r.ma50))
+      && (!maxR || (r.entry>r.stop && (r.entry-r.stop)/r.entry*100<=maxR)) );
 }
 
 function render(){
@@ -855,8 +876,12 @@ document.getElementById("profile").addEventListener("change",e=>{
   if(Object.keys(RAWBARS).length) rescore();
   else document.getElementById("note").textContent=NOTES[PROFILE]||"";
 });
-["minScore","minLiq","fSetup","fSector","capital","riskpct"].forEach(id=>
+["minScore","minLiq","fSetup","fSector","capital","riskpct","aboveMa50","maxRisk"].forEach(id=>
   document.getElementById(id).addEventListener("change",render));
+document.getElementById("chaseGuard").addEventListener("change",e=>{
+  CHASEGUARD = e.target.value==="on";
+  if(Object.keys(RAWBARS).length) rescore();
+});
 document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
   const k=th.dataset.k; if(!k)return;
   if(sortKey===k)sortDir*=-1; else {sortKey=k;sortDir=-1;}
