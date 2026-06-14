@@ -45,13 +45,19 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]
 
 PROFILES = ["daily", "swing", "scalp"]
-HORIZON = {"daily": 5, "swing": 10, "scalp": 1}      # forward-return window
-MAXHOLD = {"daily": 5, "swing": 15, "scalp": 1}      # trade time-stop (bars)
-RISK = {"daily": (1.5, 3.0), "swing": (2.0, 5.0), "scalp": (0.8, 1.5)}  # (stopxATR, targetxATR)
+HORIZON = {"daily": 5, "swing": 10, "scalp": 1}      # forward-return window (signal-quality study)
+# --- REWORKED EXITS: trade with the trend, wide disaster stop + MA trailing exit ---
+MAXHOLD  = {"daily": 20, "swing": 45, "scalp": 1}    # generous safety cap; the trail usually fires first
+TRAILMA  = {"daily": 10, "swing": 20, "scalp": 1}    # exit on a daily CLOSE below this MA (trend break)
+DISASTER = {"daily": 3.0, "swing": 3.5, "scalp": 1.0}# catastrophe stop in xATR (wide, to avoid noise whipsaw)
+RISK = {"daily": (1.5, 3.0), "swing": (2.0, 5.0), "scalp": (0.8, 1.5)}  # legacy levels for analyze() display only
+# setups proven to lose / not worth trading -> never entered in the simulation
+NON_TRADABLE = {"Oversold Bounce", "Avoid – Downtrend", "Avoid – Too thin/quiet",
+                "Neutral / No setup", "Watch", "Overbought – caution"}
 
 # ------------------------------------------------------------------ data
-def fetch_history(sym, rng=YEARS, retries=3):
-    path = f"/v8/finance/chart/{sym}.JK?range={rng}&interval=1d"
+def fetch_history(sym, rng=YEARS, retries=3, suffix=".JK"):
+    path = f"/v8/finance/chart/{sym}{suffix}?range={rng}&interval=1d"
     for attempt in range(retries):
         host = HOSTS[attempt % len(HOSTS)]
         try:
@@ -248,44 +254,60 @@ def analyze(bars, profile, chase_guard=True):
     swinglow = min(l[max(0, n - (1 if profile == "scalp" else 10 if profile == "swing" else 5)):])
     stop = max(swinglow, close - stopx * a)
     return {"score": s, "setup": setup, "close": close, "ma50": ma50, "valbn": valbn,
-            "stop": stop, "target": close + tgtx * a, "chg": chg, "acc": acc}
+            "stop": stop, "target": close + tgtx * a, "chg": chg, "acc": acc, "atr": a}
 
 # ------------------------------------------------------------------ simulation
 def year_of(ts):
     try: return datetime.fromtimestamp(ts, tz=timezone.utc).year
     except Exception: return 0
 
-def backtest_ticker(bars, profile):
-    """Returns (forward_records, trades) for one ticker/profile, no lookahead."""
+def datestr(ts):
+    try: return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y%m%d")
+    except Exception: return ""
+
+def build_regime(idx):
+    """date(YYYYMMDD) -> True if IHSG closed above its 50-day MA that day (risk-on)."""
+    if not idx: return {}
+    c, t = idx["c"], idx["t"]; reg = {}
+    for i in range(len(c)):
+        if i < 50: continue
+        ma = sum(c[i - 49:i + 1]) / 50
+        reg[datestr(t[i])] = c[i] > ma
+    return reg
+
+def backtest_ticker(bars, profile, regime):
+    """Returns (forward_records, trades) for one ticker/profile, no lookahead.
+    Entry: next open when score>=threshold, setup is tradable, and IHSG is risk-on.
+    Exit: wide disaster stop (xATR) OR a daily close below the trail MA OR a time cap."""
     o, h, l, c, v, t = bars["o"], bars["h"], bars["l"], bars["c"], bars["v"], bars["t"]
-    n = len(c); H = HORIZON[profile]; maxhold = MAXHOLD[profile]
-    fwd = []      # (score, forward_return_pct)
-    trades = []   # dict per trade
-    in_pos = False; entry = stop = target = 0.0; ebar = 0; esetup = ""; escore = 0
+    n = len(c); H = HORIZON[profile]; maxhold = MAXHOLD[profile]; trailn = TRAILMA[profile]
+    fwd = []; trades = []
+    in_pos = False; entry = dstop = 0.0; ebar = 0; esetup = ""; escore = 0
     for ti in range(60, n - 1):
         window = {"o": o[:ti + 1], "h": h[:ti + 1], "l": l[:ti + 1], "c": c[:ti + 1], "v": v[:ti + 1]}
         a = analyze(window, profile)
         if a is None: continue
-        if a["valbn"] < MIN_VALUE_BN:  # liquidity gate
-            pass
-        # ---- signal-quality: forward return over H days (uses close[ti] -> close[ti+H])
-        if ti + H < n and a["valbn"] >= MIN_VALUE_BN:
+        liquid = a["valbn"] >= MIN_VALUE_BN
+        # signal-quality forward study (pure hold, no exits/regime)
+        if ti + H < n and liquid:
             fwd.append((a["score"], (c[ti + H] - c[ti]) / c[ti] * 100))
-        # ---- trade simulation
+        # realistic trade simulation
         if not in_pos:
-            if a["score"] >= ENTRY_SCORE and a["valbn"] >= MIN_VALUE_BN and ti + 1 < n:
-                in_pos = True; entry = o[ti + 1]; stop = a["stop"]; target = a["target"]
+            risk_on = regime.get(datestr(t[ti]), True)
+            if (liquid and a["score"] >= ENTRY_SCORE and a["setup"] not in NON_TRADABLE
+                    and risk_on and ti + 1 < n):
+                in_pos = True; entry = o[ti + 1]; dstop = entry - DISASTER[profile] * a["atr"]
                 ebar = ti + 1; esetup = a["setup"]; escore = a["score"]
         else:
-            d = ti  # evaluating bar d (current)
+            d = ti
+            trail = sma(c[:d + 1], trailn)
             ex = None
-            if o[d] <= stop: ex = o[d]                     # gap through stop
-            elif l[d] <= stop: ex = stop
-            elif o[d] >= target: ex = o[d]                 # gap through target
-            elif h[d] >= target: ex = target
-            elif (d - ebar) >= maxhold: ex = c[d]          # time stop
+            if o[d] <= dstop: ex = o[d]                                   # gap through disaster stop
+            elif l[d] <= dstop: ex = dstop
+            elif trail is not None and d > ebar and c[d] < trail: ex = c[d]  # trend break (MA trail)
+            elif (d - ebar) >= maxhold: ex = c[d]                         # safety time cap
             if ex is not None:
-                risk = (entry - stop) / entry if entry > stop else 0.01
+                risk = (entry - dstop) / entry if entry > dstop else 0.01
                 ret = (ex - entry) / entry - COST
                 trades.append({"ret": ret * 100, "R": max(-5.0, min(10.0, ret / risk)) if risk > 0 else 0,
                                "win": ret > 0, "hold": d - ebar, "setup": esetup,
@@ -331,12 +353,21 @@ def main():
     print(f"History fetched for {len(data)} tickers")
     if len(data) < 20: sys.exit("ERROR: too little data (Yahoo may be blocking this IP).")
 
+    idx = fetch_history("^JKSE", suffix="")           # IHSG composite for the regime filter
+    regime = build_regime(idx)
+    if regime:
+        ron = sum(1 for x in regime.values() if x)
+        print(f"Regime (IHSG vs MA50): {ron}/{len(regime)} days risk-on")
+    else:
+        print("Regime: IHSG unavailable -- entries not regime-gated")
+
     report = {"generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-              "years": YEARS, "entryScore": ENTRY_SCORE, "cost": COST, "tickers": len(data), "profiles": {}}
+              "years": YEARS, "entryScore": ENTRY_SCORE, "cost": COST, "tickers": len(data),
+              "regimeGated": bool(regime), "profiles": {}}
     for prof in PROFILES:
         all_fwd, all_trades = [], []
         for s, b in data.items():
-            fwd, tr = backtest_ticker(b, prof)
+            fwd, tr = backtest_ticker(b, prof, regime)
             all_fwd += fwd; all_trades += tr
         overall = stat_block(all_trades)
         by_setup = {}
@@ -362,6 +393,11 @@ def write_report(r):
     L.append("# IDX Screener — Backtest Report\n")
     L.append(f"_Generated {r['generatedAt']} · {r['tickers']} tickers · history {r['years']} · "
              f"entry score ≥ {r['entryScore']:.0f} · costs {r['cost']*100:.1f}% round-trip_\n")
+    L.append("**Trade rules tested:** enter at next open when score ≥ threshold, the setup is tradable "
+             "(Oversold Bounce / Avoid / Neutral / Overbought are excluded), and IHSG is **risk-on** "
+             "(above its 50-day MA). Exit on a wide **disaster stop** (3×ATR Daily, 3.5× Swing), a daily "
+             "**close below the trail MA** (MA10 Daily, MA20 Swing), or a time cap. Compare against the "
+             "previous tight-stop version to see the effect.\n")
     L.append("> **Read this first.** Absolute returns are optimistic — the universe is *today's* liquid "
              "names (survivorship bias). The trustworthy signal is **relative**: does expectancy rise with "
              "the score, and which setups beat the average. Scalp uses daily bars (buy-open→sell-close proxy), "
