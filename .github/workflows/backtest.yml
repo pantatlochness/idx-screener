@@ -1,0 +1,52 @@
+name: Run backtest
+
+# Manual only — backtesting fetches years of history for the whole universe,
+# so run it on demand (Actions tab → Run workflow), not on a schedule.
+on:
+  workflow_dispatch:
+    inputs:
+      years:
+        description: "History window (1y, 2y, 3y, 5y, max)"
+        default: "3y"
+        required: false
+      entry_score:
+        description: "Min score to enter a simulated trade"
+        default: "65"
+        required: false
+      cost:
+        description: "Round-trip cost+slippage as a decimal (0.003 = 0.3%)"
+        default: "0.003"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: idx-backtest
+  cancel-in-progress: false
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run backtest
+        env:
+          BT_YEARS: ${{ github.event.inputs.years || '3y' }}
+          BT_ENTRY_SCORE: ${{ github.event.inputs.entry_score || '65' }}
+          BT_COST: ${{ github.event.inputs.cost || '0.003' }}
+        run: python backtest.py
+      - name: Commit results
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backtest_report.md backtest.json
+          if git diff --staged --quiet; then
+            echo "No changes."
+          else
+            git commit -m "backtest: results $(date -u +%FT%TZ)"
+            git push
+          fi
