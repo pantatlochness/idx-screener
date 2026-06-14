@@ -1,6 +1,8 @@
 # IDX Screener — Backtest Report
 
-_Generated 2026-06-14T17:53:22+00:00 · 159 tickers · history 3y · entry score ≥ 65 · costs 0.3% round-trip_
+_Generated 2026-06-14T18:26:18+00:00 · 159 tickers · history 3y · entry score ≥ 65 · costs 0.3% round-trip_
+
+**Trade rules tested:** enter at next open when score ≥ threshold, the setup is tradable (Oversold Bounce / Avoid / Neutral / Overbought are excluded), and IHSG is **risk-on** (above its 50-day MA). Exit on a wide **disaster stop** (3×ATR Daily, 3.5× Swing), a daily **close below the trail MA** (MA10 Daily, MA20 Swing), or a time cap. Compare against the previous tight-stop version to see the effect.
 
 > **Read this first.** Absolute returns are optimistic — the universe is *today's* liquid names (survivorship bias). The trustworthy signal is **relative**: does expectancy rise with the score, and which setups beat the average. Scalp uses daily bars (buy-open→sell-close proxy), so it can't model true intraday timing. Costs/slippage are a flat assumption.
 
@@ -28,29 +30,26 @@ _If the score works, average forward return should climb as the bucket rises._
 
 ### Realistic trade simulation
 
-- Trades: **4,387** · Win rate: **38.3%** · Expectancy: **-0.43%/trade** · Avg R: **-0.10** · Profit factor: **0.86**
-- Avg win 7.09% · Avg loss -5.09% · Avg hold 3.3 bars · Max drawdown -1897.24% (cum.)
+- Trades: **2,114** · Win rate: **30.1%** · Expectancy: **0.38%/trade** · Avg R: **0.00** · Profit factor: **1.12**
+- Avg win 12.05% · Avg loss -4.64% · Avg hold 6.2 bars · Max drawdown -416.52% (cum.)
 
 **By setup:**
 
 | Setup | Trades | Win% | Expectancy | Avg R | PF |
 |---|---|---|---|---|---|
-| Overbought – caution | 295 | 44.7 | 0.95% | 0.10 | 1.25 |
-| Trend Continuation | 1,427 | 39.0 | -0.13% | -0.07 | 0.96 |
-| Neutral / No setup | 142 | 39.4 | -0.42% | -0.07 | 0.86 |
-| Pullback Buy | 188 | 35.6 | -0.66% | -0.19 | 0.73 |
-| Breakout Watch | 379 | 37.7 | -0.69% | -0.14 | 0.76 |
-| Momentum Breakout | 1,892 | 37.5 | -0.72% | -0.13 | 0.77 |
-| Oversold Bounce | 64 | 26.6 | -2.55% | -0.29 | 0.50 |
+| Momentum Breakout | 1,183 | 30.4 | 0.78% | 0.03 | 1.22 |
+| Pullback Buy | 119 | 27.7 | 0.45% | 0.05 | 1.18 |
+| Trend Continuation | 605 | 30.1 | -0.02% | -0.02 | 0.99 |
+| Breakout Watch | 207 | 29.5 | -0.76% | -0.06 | 0.76 |
 
 **By year:**
 
 | Year | Trades | Win% | Expectancy | Avg R |
 |---|---|---|---|---|
-| 2023 | 383 | 32.1 | -0.91% | -0.20 |
-| 2024 | 1,627 | 39.1 | -0.40% | -0.07 |
-| 2025 | 1,743 | 40.0 | -0.01% | -0.06 |
-| 2026 | 634 | 35.2 | -1.33% | -0.21 |
+| 2023 | 211 | 28.9 | -0.47% | -0.08 |
+| 2024 | 865 | 30.1 | -0.13% | -0.01 |
+| 2025 | 912 | 30.5 | 1.35% | 0.06 |
+| 2026 | 126 | 29.4 | -1.73% | -0.14 |
 
 ## SWING profile
 
@@ -71,29 +70,27 @@ _If the score works, average forward return should climb as the bucket rises._
 
 ### Realistic trade simulation
 
-- Trades: **3,398** · Win rate: **34.4%** · Expectancy: **-0.36%/trade** · Avg R: **-0.08** · Profit factor: **0.92**
-- Avg win 12.16% · Avg loss -6.92% · Avg hold 8.8 bars · Max drawdown -1252.65% (cum.)
+- Trades: **2,031** · Win rate: **26.7%** · Expectancy: **1.06%/trade** · Avg R: **0.04** · Profit factor: **1.30**
+- Avg win 17.26% · Avg loss -4.83% · Avg hold 10.4 bars · Max drawdown -449.99% (cum.)
 
 **By setup:**
 
 | Setup | Trades | Win% | Expectancy | Avg R | PF |
 |---|---|---|---|---|---|
-| Uptrend – Extended | 72 | 43.1 | 0.49% | 0.07 | 1.08 |
-| Swing Buy – Pullback | 645 | 33.6 | -0.04% | -0.06 | 0.99 |
-| Swing Buy – Breakout | 1,229 | 35.3 | -0.37% | -0.08 | 0.92 |
-| Uptrend – Hold | 1,142 | 34.7 | -0.37% | -0.09 | 0.92 |
-| Neutral / No setup | 228 | 31.6 | -0.54% | 0.06 | 0.88 |
-| Base / Accumulation | 11 | 45.5 | -1.13% | -0.18 | 0.65 |
-| Avoid – Downtrend | 71 | 19.7 | -3.06% | -0.51 | 0.45 |
+| Uptrend – Hold | 609 | 27.6 | 1.34% | 0.04 | 1.40 |
+| Swing Buy – Breakout | 802 | 27.8 | 1.19% | 0.04 | 1.27 |
+| Swing Buy – Pullback | 607 | 24.5 | 0.76% | 0.03 | 1.30 |
+| Base / Accumulation | 8 | 12.5 | -3.24% | -0.33 | 0.19 |
+| Uptrend – Extended | 5 | 20.0 | -8.19% | -0.51 | 0.06 |
 
 **By year:**
 
 | Year | Trades | Win% | Expectancy | Avg R |
 |---|---|---|---|---|
-| 2023 | 308 | 29.2 | -1.03% | -0.15 |
-| 2024 | 1,244 | 35.3 | -0.48% | -0.09 |
-| 2025 | 1,355 | 39.4 | 1.10% | 0.09 |
-| 2026 | 491 | 21.6 | -3.65% | -0.45 |
+| 2023 | 238 | 21.8 | -0.61% | -0.09 |
+| 2024 | 841 | 26.0 | 0.18% | -0.00 |
+| 2025 | 833 | 29.3 | 2.86% | 0.14 |
+| 2026 | 119 | 22.7 | -1.94% | -0.17 |
 
 ## SCALP profile
 
@@ -114,26 +111,24 @@ _If the score works, average forward return should climb as the bucket rises._
 
 ### Realistic trade simulation
 
-- Trades: **9,325** · Win rate: **28.8%** · Expectancy: **-0.87%/trade** · Avg R: **-0.30** · Profit factor: **0.58**
-- Avg win 4.23% · Avg loss -2.93% · Avg hold 0.5 bars · Max drawdown -8105.94% (cum.)
+- Trades: **4,803** · Win rate: **33.8%** · Expectancy: **-0.60%/trade** · Avg R: **-0.15** · Profit factor: **0.74**
+- Avg win 5.18% · Avg loss -3.56% · Avg hold 0.8 bars · Max drawdown -2910.18% (cum.)
 
 **By setup:**
 
 | Setup | Trades | Win% | Expectancy | Avg R | PF |
 |---|---|---|---|---|---|
-| Scalp – Volatile mover | 5,872 | 29.2 | -0.71% | -0.27 | 0.64 |
-| Watch | 484 | 26.0 | -0.79% | -0.45 | 0.38 |
-| Avoid – Too thin/quiet | 409 | 28.6 | -1.00% | -0.26 | 0.59 |
-| Scalp – Momentum | 2,560 | 28.5 | -1.24% | -0.34 | 0.49 |
+| Scalp – Volatile mover | 3,224 | 36.0 | -0.52% | -0.12 | 0.77 |
+| Scalp – Momentum | 1,579 | 29.3 | -0.79% | -0.21 | 0.69 |
 
 **By year:**
 
 | Year | Trades | Win% | Expectancy | Avg R |
 |---|---|---|---|---|
-| 2023 | 801 | 27.1 | -1.05% | -0.38 |
-| 2024 | 2,854 | 30.4 | -0.69% | -0.26 |
-| 2025 | 3,850 | 29.5 | -0.78% | -0.29 |
-| 2026 | 1,820 | 25.7 | -1.25% | -0.35 |
+| 2023 | 471 | 31.4 | -0.62% | -0.19 |
+| 2024 | 1,514 | 33.8 | -0.68% | -0.18 |
+| 2025 | 2,367 | 34.5 | -0.41% | -0.11 |
+| 2026 | 451 | 33.0 | -1.36% | -0.24 |
 
 ---
 _Backtest is decision-support, not a guarantee. Past performance does not predict future results. Re-run periodically and trust the relative/ranked findings over absolute returns._
