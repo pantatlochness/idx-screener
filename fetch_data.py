@@ -63,6 +63,55 @@ def fetch_one(sym, retries=2):
     return None
 
 
+def _num(d, keys):
+    for k in keys:
+        if k in d and d[k] not in (None, ""):
+            try:
+                return float(str(d[k]).replace(",", ""))
+            except Exception:
+                pass
+    return None
+
+
+def fetch_foreign():
+    """Best-effort: IDX publishes daily stock summary (incl. foreign buy/sell) for free.
+    Returns {CODE: net_value} where net = ForeignBuy - ForeignSell. Returns {} if IDX is
+    unreachable (e.g. blocked from CI) -- the dashboard then relies on its volume-based
+    accumulation engine instead. Per-broker summary is NOT here (that is paid data)."""
+    from datetime import timedelta
+    base = "https://www.idx.co.id/primary/TradingSummary/GetStockSummary"
+    wib_now = datetime.now(timezone.utc) + timedelta(hours=7)
+    for back in range(0, 6):  # walk back to skip weekends/holidays
+        d = (wib_now - timedelta(days=back)).strftime("%Y%m%d")
+        url = f"{base}?length=9999&start=0&date={d}"
+        try:
+            req = urllib.request.Request(url, headers={
+                "User-Agent": UA, "Accept": "application/json",
+                "Referer": "https://www.idx.co.id/",
+                "X-Requested-With": "XMLHttpRequest"})
+            with urllib.request.urlopen(req, timeout=25) as r:
+                j = json.load(r)
+            rows = j.get("data") or j.get("Data") or []
+            out = {}
+            for x in rows:
+                code = str(x.get("StockCode") or x.get("Code") or x.get("Kode") or "").upper().strip()
+                if not code:
+                    continue
+                fb = _num(x, ["ForeignBuy", "Foreign Buy", "foreignBuy"])
+                fs = _num(x, ["ForeignSell", "Foreign Sell", "foreignSell"])
+                if fb is None and fs is None:
+                    continue
+                out[code] = (fb or 0) - (fs or 0)
+            if out:
+                print(f"Foreign flow: {len(out)} stocks for {d}")
+                return out
+        except Exception as e:
+            last = repr(e)[:80]  # noqa
+    print("Foreign flow: unavailable (IDX not reachable) -- using accumulation engine only",
+          file=sys.stderr)
+    return {}
+
+
 def main():
     syms = load_universe()
     print(f"Fetching {len(syms)} tickers from Yahoo Finance...")
@@ -78,12 +127,22 @@ def main():
             print(f"  {i}/{len(syms)} done ({ok} ok, {fail} failed)")
         time.sleep(0.25)  # be polite to the API / avoid rate limits
 
+    # Best-effort: merge IDX free foreign net buy/sell into the bars.
+    foreign = fetch_foreign()
+    fmatch = 0
+    for code in bars:
+        if code in foreign:
+            bars[code]["foreign"] = foreign[code]
+            fmatch += 1
+    print(f"Foreign flow merged into {fmatch} tickers")
+
     out = {
         "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "source": "yahoo-finance-chart",
         "range": RANGE,
         "count": ok,
         "failed": fail,
+        "foreignCovered": fmatch,
         "bars": bars,
     }
     (ROOT / "data.json").write_text(json.dumps(out, separators=(",", ":")),
