@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IDX Daily Screener Engine</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
 <style>
   :root{
     --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --border:#2a313c;
@@ -71,6 +70,8 @@
   .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
   .live{background:var(--green)} .closed{background:var(--red)} .pre{background:var(--yellow)}
   .err{color:var(--red);font-size:11.5px;margin-top:6px}
+  .chartbox{position:relative;width:100%;height:260px}
+  .chartbox canvas{width:100%;height:100%;display:block}
 </style>
 </head>
 <body>
@@ -343,7 +344,8 @@ function analyze(sym,name,sector,bars){
 
   return {sym,name,sector,close,prev,chg,ma5,ma20,ma50,volr,valueTraded,
     rsi:rsiV,macd:m,atr:atrV,hi20,lo20,roc5,gap,pats,score:s,setup,
-    entry,stop,t1,t2,rr,why,closes:c.slice(-60),bandar:0};
+    entry,stop,t1,t2,rr,why,
+    ohlc:{o:o.slice(-60),h:h.slice(-60),l:l.slice(-60),c:c.slice(-60)},bandar:0};
 }
 
 /* ---------------- Data fetching ---------------- */
@@ -535,24 +537,51 @@ function showDetail(r,lots){
         ${r.bandar?`<li><b style="color:var(--purple)">+${r.bandar}</b> Bandar/foreign-flow boost (manual)</li>`:""}
       </ul></div>
     </div>
-    <div><canvas id="spark" height="220"></canvas>
-      <div class="mut" style="font-size:11px;margin-top:6px">Last 60 sessions, close with MA20. Confirm pattern on your own chart before entry.</div>
+    <div><div class="chartbox"><canvas id="spark"></canvas></div>
+      <div class="mut" style="font-size:11px;margin-top:6px">Last 60 daily candles (green up / red down) with MA20. Confirm on your own chart before entry.</div>
     </div>
   </div>`;
   drawSpark(r);
   d.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 
-let chart;
-function drawSpark(r){
-  const ctx=document.getElementById("spark"); if(chart)chart.destroy();
-  const data=r.closes; const ma=data.map((_,i)=>i>=19?data.slice(i-19,i+1).reduce((a,b)=>a+b,0)/20:null);
-  chart=new Chart(ctx,{type:"line",data:{labels:data.map((_,i)=>i),
-    datasets:[{data,borderColor:"#2f81f7",borderWidth:1.6,pointRadius:0,tension:.15},
-      {data:ma,borderColor:"#d29922",borderWidth:1,pointRadius:0,borderDash:[4,3]}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{display:false},y:{ticks:{color:"#8b949e"},grid:{color:"#21262d"}}}}});
+let CUR=null;
+function drawSpark(r){ CUR=r; drawCandles(r); }
+function drawCandles(r){
+  const cv=document.getElementById("spark"); if(!cv||!r.ohlc) return;
+  const box=cv.parentElement;
+  const dpr=window.devicePixelRatio||1;
+  const w=box.clientWidth||600, h=box.clientHeight||260;
+  cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  const O=r.ohlc.o,H=r.ohlc.h,L=r.ohlc.l,C=r.ohlc.c, n=C.length; if(!n) return;
+  const padL=46,padR=8,padT=10,padB=8, plotW=w-padL-padR, plotH=h-padT-padB;
+  let lo=Math.min(...L), hi=Math.max(...H); const span=(hi-lo)||1; lo-=span*0.04; hi+=span*0.04;
+  const x=i=> padL + (n<=1?plotW/2 : i*plotW/(n-1));
+  const y=p=> padT + (hi-p)/(hi-lo)*plotH;
+  // price gridlines + labels
+  ctx.strokeStyle="#21262d"; ctx.fillStyle="#8b949e"; ctx.font="10px sans-serif"; ctx.textAlign="right"; ctx.textBaseline="middle";
+  for(let g=0;g<=4;g++){ const p=lo+(hi-lo)*g/4, yy=y(p);
+    ctx.beginPath(); ctx.moveTo(padL,yy); ctx.lineTo(w-padR,yy); ctx.stroke();
+    ctx.fillText(Math.round(p).toLocaleString("en-US"), padL-4, yy); }
+  // candles
+  const cw=Math.max(1.5, Math.min(9, plotW/n*0.6));
+  for(let i=0;i<n;i++){
+    const up=C[i]>=O[i], col=up?"#3fb950":"#f85149", xc=x(i);
+    ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(xc,y(H[i])); ctx.lineTo(xc,y(L[i])); ctx.stroke();
+    const yo=y(O[i]), yc=y(C[i]), top=Math.min(yo,yc); let bh=Math.abs(yc-yo); if(bh<1)bh=1;
+    ctx.fillRect(xc-cw/2, top, cw, bh);
+  }
+  // MA20 overlay
+  ctx.strokeStyle="#d29922"; ctx.lineWidth=1.2; ctx.beginPath(); let started=false;
+  for(let i=19;i<n;i++){ let s=0; for(let k=i-19;k<=i;k++)s+=C[k]; const ma=s/20, xx=x(i), yy=y(ma);
+    if(!started){ctx.moveTo(xx,yy);started=true;} else ctx.lineTo(xx,yy); }
+  ctx.stroke();
 }
+let _rsz; window.addEventListener("resize",()=>{ clearTimeout(_rsz); _rsz=setTimeout(()=>{
+  if(CUR && document.getElementById("detail").style.display!=="none") drawCandles(CUR); },150); });
 
 /* ---------------- Run ---------------- */
 async function run(){
