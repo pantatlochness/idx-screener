@@ -171,10 +171,8 @@
   <div class="panel-detail" id="detail"></div>
 
   <details>
-    <summary>Bandarmology / Foreign-flow layer (manual boost)</summary>
-    <div class="sub" style="margin-top:8px">Free data has no broker summary. Paste tickers you see with strong <b>foreign net buy / big-player accumulation</b> in your terminal (RTI, Stockbit, broker summary). One per line or comma-separated. Each adds a bandar bonus to its score. Optionally add a weight 1-3, e.g. <code>BBRI 3</code>.</div>
-    <textarea id="bandarBox" placeholder="BBRI 3&#10;ANTM 2&#10;ADRO&#10;GOTO 1"></textarea>
-    <button class="ghost" id="applyBandar" style="margin-top:8px">Apply boost & re-rank</button>
+    <summary>Accumulation / Foreign-flow engine (automatic — no input needed)</summary>
+    <div class="sub" style="margin-top:8px">Every stock's <b>accumulation vs distribution</b> is detected automatically from volume behaviour — On-Balance Volume trend, Chaikin Money Flow, Money Flow Index, and up/down volume ratio — and folded into the score. Foreign net buy/sell is added automatically when the data pipeline can fetch it. Open any stock to see its accumulation readout. <b>Note:</b> per-broker summary (which specific broker is accumulating) requires a paid terminal and is not included.</div>
   </details>
 
   <details>
@@ -271,6 +269,41 @@ function atr(h,l,c,n=14){ if(c.length<n+1) return null; const tr=[];
   for(let i=1;i<c.length;i++){ tr.push(Math.max(h[i]-l[i],Math.abs(h[i]-c[i-1]),Math.abs(l[i]-c[i-1]))); }
   let a=tr.slice(0,n).reduce((x,y)=>x+y,0)/n;
   for(let i=n;i<tr.length;i++)a=(a*(n-1)+tr[i])/n; return a; }
+
+/* ---------------- Accumulation / Distribution (auto "bandarmology" from volume) ----------------
+   Replaces manual broker-summary input. Detects smart-money accumulation vs distribution
+   from how volume behaves on up vs down days: OBV trend, Chaikin Money Flow, Money Flow Index,
+   and up/down volume ratio. All computed from free OHLCV. */
+function accumulation(o,h,l,c,v){
+  const n=c.length;
+  // OBV and its slope over the last ~10 sessions
+  const obv=[0];
+  for(let i=1;i<n;i++) obv.push(obv[i-1]+(c[i]>c[i-1]?v[i]:c[i]<c[i-1]?-v[i]:0));
+  const obvSlope = n>11 ? obv[n-1]-obv[n-11] : 0;
+  const obvUp = obvSlope>0;
+  // Chaikin Money Flow (20)
+  let mfvSum=0,vSum=0;
+  for(let i=Math.max(0,n-20);i<n;i++){ const rng=(h[i]-l[i])||1e-9; mfvSum+=(((c[i]-l[i])-(h[i]-c[i]))/rng)*v[i]; vSum+=v[i]; }
+  const cmf = vSum?mfvSum/vSum:0;
+  // Money Flow Index (14)
+  let pos=0,neg=0;
+  for(let i=Math.max(1,n-14);i<n;i++){ const tp=(h[i]+l[i]+c[i])/3, ptp=(h[i-1]+l[i-1]+c[i-1])/3, mf=tp*v[i];
+    if(tp>ptp)pos+=mf; else if(tp<ptp)neg+=mf; }
+  const mfi = neg===0?100:100-100/(1+pos/neg);
+  // up/down volume ratio (20)
+  let uv=0,dv=0;
+  for(let i=Math.max(1,n-20);i<n;i++){ if(c[i]>c[i-1])uv+=v[i]; else if(c[i]<c[i-1])dv+=v[i]; }
+  const udr = dv?uv/dv:(uv>0?3:1);
+  // composite 0-100
+  let a=50;
+  a += obvUp?12:-12;
+  a += cmf>0.05?12: cmf>0?5: cmf<-0.05?-12:-5;
+  a += mfi>=55?10: mfi>=45?3: mfi<35?-10:-3;
+  a += udr>=1.5?10: udr>=1?3: udr<0.7?-10:-3;
+  a=Math.max(0,Math.min(100,Math.round(a)));
+  const label = a>=66?"Accumulation": a>=45?"Neutral":"Distribution";
+  return {acc:a, label, obvUp, cmf, mfi, udr};
+}
 
 /* ---------------- Candlestick patterns (last bars) ---------------- */
 function candles(o,h,l,c){
@@ -454,16 +487,31 @@ function analyze(sym,name,sector,bars,profile){
     rsi:rsiV,macd:m,atrV,atrPct,avgRangePct,closePos,rangePos,
     hi20,lo20,roc5,roc20,gap,pats,bullPat,bearPat,aboveMA,stacked,breakout,nearHigh,upTrend,dnTrend};
 
+  const ac=accumulation(o,h,l,c,v);
+  const foreign=(bars && typeof bars.foreign==="number")?bars.foreign:null;
+
   const sc = profile==="swing" ? scoreSwing(ind)
            : profile==="scalp" ? scoreScalp(ind)
            : scoreDaily(ind);
+
+  // ---- automatic accumulation / foreign-flow layer (replaces manual broker input) ----
+  const accW = profile==="swing"?15 : profile==="scalp"?6 : 12;
+  if(ac.acc>=66){ sc.score=clampScore(sc.score+accW);
+    sc.why.push(["+"+accW,"Accumulation — OBV "+(ac.obvUp?"rising":"flat")+", CMF "+ac.cmf.toFixed(2)+", MFI "+ac.mfi.toFixed(0)]); }
+  else if(ac.acc<45){ const p=Math.round(accW*0.7); sc.score=clampScore(sc.score-p);
+    sc.why.push(["-"+p,"Distribution — volume leaving (CMF "+ac.cmf.toFixed(2)+", MFI "+ac.mfi.toFixed(0)+")"]); }
+  if(foreign!=null && foreign!==0){ const fw=profile==="scalp"?6:10;
+    if(foreign>0){ sc.score=clampScore(sc.score+fw); sc.why.push(["+"+fw,"Foreign net BUY"]); }
+    else { sc.score=clampScore(sc.score-fw); sc.why.push(["-"+fw,"Foreign net SELL"]); } }
+
   const lv = riskLevels(profile, close, atrV, l, n);
 
   return {sym,name,sector,close,prev,chg,ma5,ma20,ma50,volr,valueTraded,
     rsi:rsiV,macd:m,atr:atrV,hi20,lo20,roc5,gap,pats,
     score:sc.score, setup:sc.setup, why:sc.why,
+    acc:ac.acc, accLabel:ac.label, accObj:ac, foreign,
     entry:lv.entry, stop:lv.stop, t1:lv.t1, t2:lv.t2, rr:lv.rr,
-    ohlc:{o:o.slice(-60),h:h.slice(-60),l:l.slice(-60),c:c.slice(-60)}, bandar:0, profile};
+    ohlc:{o:o.slice(-60),h:h.slice(-60),l:l.slice(-60),c:c.slice(-60)}, profile};
 }
 
 /* ---------------- Data fetching ---------------- */
@@ -644,6 +692,8 @@ function showDetail(r,lots){
         <div class="pd-stat"><div class="k">MA20 / 50</div><div class="v" style="font-size:13px">${fmt(r.ma20)} / ${fmt(r.ma50)}</div></div>
         <div class="pd-stat"><div class="k">20d high</div><div class="v" style="font-size:13px">${fmt(r.hi20)}</div></div>
         <div class="pd-stat"><div class="k">ATR(14)</div><div class="v" style="font-size:13px">${fmt(r.atr)}</div></div>
+        <div class="pd-stat"><div class="k">Accumulation</div><div class="v" style="font-size:13px;color:${r.acc>=66?'var(--green)':r.acc<45?'var(--red)':'var(--muted)'}">${r.accLabel} (${r.acc})</div></div>
+        <div class="pd-stat"><div class="k">Money flow</div><div class="v" style="font-size:12px">CMF ${r.accObj.cmf.toFixed(2)} · MFI ${r.accObj.mfi.toFixed(0)}${r.foreign!=null?` · Foreign ${r.foreign>0?'BUY':'SELL'}`:''}</div></div>
       </div>
       <div class="lvl">
         <div><div class="k">Entry</div><div class="v">${fmt(r.entry)}</div></div>
@@ -655,7 +705,6 @@ function showDetail(r,lots){
       </div>
       <div class="reason"><b>Why it scored ${r.score}:</b><ul>
         ${r.why.map(w=>`<li><b style="color:${w[0][0]==='-'?'var(--red)':'var(--green)'}">${w[0]}</b> ${w[1]}</li>`).join("")}
-        ${r.bandar?`<li><b style="color:var(--purple)">+${r.bandar}</b> Bandar/foreign-flow boost (manual)</li>`:""}
       </ul></div>
     </div>
     <div><div class="chartbox"><canvas id="spark"></canvas></div>
@@ -757,23 +806,12 @@ const HORIZON={daily:"Hold: intraday → a few days.",swing:"Hold: days → ~2 w
 function rescore(){
   RESULTS=[];
   for(const sym in RAWBARS){ const x=RAWBARS[sym];
-    try{ const a=analyze(sym,x.name,x.sector,x.bars,PROFILE); if(a){a.bandar=0;applyBandarOne(a);RESULTS.push(a);} }catch(e){}
+    try{ const a=analyze(sym,x.name,x.sector,x.bars,PROFILE); if(a) RESULTS.push(a); }catch(e){}
   }
   document.getElementById("note").textContent=NOTES[PROFILE]||"";
   buildSectorFilter(); buildSetupFilter(); render();
 }
 
-/* ---------------- Bandarmology boost ---------------- */
-function parseBandar(){
-  bandarMap={};
-  document.getElementById("bandarBox").value.split(/[\n,]/).forEach(line=>{
-    const p=line.trim().split(/\s+/); if(!p[0])return;
-    const w=Math.min(3,Math.max(1,+p[1]||1));
-    bandarMap[p[0].toUpperCase()]=w*5;
-  });
-}
-function applyBandarOne(r){ const b=bandarMap[r.sym]; if(b){ r.score=Math.min(100,r.score-(r.bandar||0)+b); r.bandar=b; } }
-document.getElementById("applyBandar").onclick=()=>{ parseBandar(); RESULTS.forEach(r=>{r.score-=(r.bandar||0);r.bandar=0;applyBandarOne(r);}); render(); };
 
 /* ---------------- Manual price scoring ---------------- */
 document.getElementById("runManual").onclick=()=>{
