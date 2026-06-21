@@ -50,13 +50,18 @@
 "Banks"
 ],
 [
-"BJTM",
-"BJTM",
+"NISP",
+"NISP",
 "Banks"
 ],
 [
-"NISP",
-"NISP",
+"BANK",
+"BANK",
+"Banks"
+],
+[
+"BJTM",
+"BJTM",
 "Banks"
 ],
 [
@@ -65,8 +70,8 @@
 "Banks"
 ],
 [
-"BANK",
-"BANK",
+"ARTO",
+"Bank Jago",
 "Banks"
 ],
 [
@@ -77,11 +82,6 @@
 [
 "PNBN",
 "PNBN",
-"Banks"
-],
-[
-"ARTO",
-"Bank Jago",
 "Banks"
 ],
 [
@@ -105,6 +105,11 @@
 "Banks"
 ],
 [
+"CFIN",
+"CFIN",
+"Banks"
+],
+[
 "TPIA",
 "Chandra Asri Pacific",
 "BasicMaterials"
@@ -125,18 +130,13 @@
 "BasicMaterials"
 ],
 [
+"MARK",
+"MARK",
+"BasicMaterials"
+],
+[
 "INTP",
 "Indocement",
-"BasicMaterials"
-],
-[
-"MARK",
-"MARK",
-"BasicMaterials"
-],
-[
-"NIKL",
-"NIKL",
 "BasicMaterials"
 ],
 [
@@ -145,6 +145,11 @@
 "BasicMaterials"
 ],
 [
+"NIKL",
+"NIKL",
+"BasicMaterials"
+],
+[
 "SRSN",
 "SRSN",
 "BasicMaterials"
@@ -157,6 +162,11 @@
 [
 "KRAS",
 "KRAS",
+"BasicMaterials"
+],
+[
+"FPNI",
+"FPNI",
 "BasicMaterials"
 ],
 [
@@ -195,11 +205,6 @@
 "Consumer"
 ],
 [
-"TAPG",
-"TAPG",
-"Consumer"
-],
-[
 "CPIN",
 "Charoen Pokphand",
 "Consumer"
@@ -215,13 +220,13 @@
 "Consumer"
 ],
 [
-"AALI",
-"AALI",
+"TAPG",
+"TAPG",
 "Consumer"
 ],
 [
-"LSIP",
-"LSIP",
+"AALI",
+"AALI",
 "Consumer"
 ],
 [
@@ -230,13 +235,8 @@
 "Consumer"
 ],
 [
-"DSNG",
-"DSNG",
-"Consumer"
-],
-[
-"SIDO",
-"Sido Muncul",
+"LSIP",
+"LSIP",
 "Consumer"
 ],
 [
@@ -245,13 +245,18 @@
 "Consumer"
 ],
 [
-"SIMP",
-"SIMP",
+"SIDO",
+"Sido Muncul",
 "Consumer"
 ],
 [
 "MYOR",
 "Mayora Indah",
+"Consumer"
+],
+[
+"DSNG",
+"DSNG",
 "Consumer"
 ],
 [
@@ -262,6 +267,11 @@
 [
 "SSMS",
 "SSMS",
+"Consumer"
+],
+[
+"SIMP",
+"SIMP",
 "Consumer"
 ],
 [
@@ -297,6 +307,11 @@
 [
 "MAIN",
 "MAIN",
+"Consumer"
+],
+[
+"ADES",
+"ADES",
 "Consumer"
 ],
 [
@@ -345,16 +360,6 @@
 "Energy"
 ],
 [
-"ADMR",
-"Adaro Minerals",
-"Energy"
-],
-[
-"INDY",
-"Indika Energy",
-"Energy"
-],
-[
 "ITMG",
 "Indo Tambangraya",
 "Energy"
@@ -365,13 +370,23 @@
 "Energy"
 ],
 [
-"RMKE",
-"RMKE",
+"ADMR",
+"Adaro Minerals",
 "Energy"
 ],
 [
 "PTBA",
 "Bukit Asam",
+"Energy"
+],
+[
+"INDY",
+"Indika Energy",
+"Energy"
+],
+[
+"RMKE",
+"RMKE",
 "Energy"
 ],
 [
@@ -400,13 +415,18 @@
 "Energy"
 ],
 [
+"BSSR",
+"BSSR",
+"Energy"
+],
+[
 "ABMM",
 "ABMM",
 "Energy"
 ],
 [
-"BSSR",
-"BSSR",
+"BYAN",
+"BYAN",
 "Energy"
 ],
 [
@@ -445,8 +465,8 @@
 "Healthcare"
 ],
 [
-"KAEF",
-"KAEF",
+"SRAJ",
+"SRAJ",
 "Healthcare"
 ],
 [
@@ -477,11 +497,6 @@
 [
 "DRMA",
 "DRMA",
-"Industrials"
-],
-[
-"INDS",
-"INDS",
 "Industrials"
 ],
 [
@@ -525,13 +540,13 @@
 "Metals"
 ],
 [
-"TINS",
-"Timah",
+"BRMS",
+"Bumi Resources Minerals",
 "Metals"
 ],
 [
-"BRMS",
-"Bumi Resources Minerals",
+"TINS",
+"Timah",
 "Metals"
 ],
 [
@@ -550,13 +565,13 @@
 "Metals"
 ],
 [
-"ARCI",
-"ARCI",
+"PSAB",
+"J Resources",
 "Metals"
 ],
 [
-"PSAB",
-"J Resources",
+"ARCI",
+"ARCI",
 "Metals"
 ],
 [
@@ -565,13 +580,13 @@
 "Metals"
 ],
 [
-"DKFT",
-"DKFT",
+"NICL",
+"NICL",
 "Metals"
 ],
 [
-"NICL",
-"NICL",
+"DKFT",
+"DKFT",
 "Metals"
 ],
 [
@@ -595,23 +610,13 @@
 "Property"
 ],
 [
-"BKSL",
-"BKSL",
-"Property"
-],
-[
 "DMAS",
 "DMAS",
 "Property"
 ],
 [
-"CBDK",
-"Bangun Kosambi Sukses",
-"Property"
-],
-[
-"KIJA",
-"KIJA",
+"BKSL",
+"BKSL",
 "Property"
 ],
 [
@@ -620,8 +625,18 @@
 "Property"
 ],
 [
+"CBDK",
+"Bangun Kosambi Sukses",
+"Property"
+],
+[
 "CTRA",
 "Ciputra Development",
+"Property"
+],
+[
+"KIJA",
+"KIJA",
 "Property"
 ],
 [
@@ -665,13 +680,13 @@
 "Retail"
 ],
 [
-"MAPA",
-"MAP Aktif",
+"ACES",
+"Aspirasi Hidup Indonesia",
 "Retail"
 ],
 [
-"ACES",
-"Aspirasi Hidup Indonesia",
+"MAPA",
+"MAP Aktif",
 "Retail"
 ],
 [
@@ -685,13 +700,13 @@
 "Retail"
 ],
 [
-"RALS",
-"Ramayana Lestari",
+"LPPF",
+"LPPF",
 "Retail"
 ],
 [
-"LPPF",
-"LPPF",
+"RALS",
+"Ramayana Lestari",
 "Retail"
 ],
 [
@@ -705,13 +720,13 @@
 "Tech"
 ],
 [
-"GOTO",
-"GoTo Gojek Tokopedia",
+"BUKA",
+"Bukalapak",
 "Tech"
 ],
 [
-"BUKA",
-"Bukalapak",
+"GOTO",
+"GoTo Gojek Tokopedia",
 "Tech"
 ],
 [
@@ -745,13 +760,13 @@
 "Telco"
 ],
 [
-"ISAT",
-"Indosat",
+"TOWR",
+"Sarana Menara",
 "Telco"
 ],
 [
-"TOWR",
-"Sarana Menara",
+"ISAT",
+"Indosat",
 "Telco"
 ],
 [
@@ -780,13 +795,13 @@
 "Transport"
 ],
 [
-"SMDR",
-"SMDR",
+"BIRD",
+"Blue Bird",
 "Transport"
 ],
 [
-"BIRD",
-"Blue Bird",
+"SMDR",
+"SMDR",
 "Transport"
 ],
 [
