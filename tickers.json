@@ -25,16 +25,16 @@
 "Banks"
 ],
 [
-"BDMN",
-"BDMN",
-"Banks"
-],
-[
 "BBTN",
 "Bank Tabungan Negara",
 "Banks"
 ],
 [
+"BDMN",
+"BDMN",
+"Banks"
+],
+[
 "BFIN",
 "BFIN",
 "Banks"
@@ -45,28 +45,13 @@
 "Banks"
 ],
 [
-"BNGA",
-"BNGA",
-"Banks"
-],
-[
-"NISP",
-"NISP",
-"Banks"
-],
-[
 "BANK",
 "BANK",
 "Banks"
 ],
 [
-"BJTM",
-"BJTM",
-"Banks"
-],
-[
-"BBKP",
-"BBKP",
+"BNGA",
+"BNGA",
 "Banks"
 ],
 [
@@ -75,18 +60,38 @@
 "Banks"
 ],
 [
+"NISP",
+"NISP",
+"Banks"
+],
+[
+"BJTM",
+"BJTM",
+"Banks"
+],
+[
+"BBKP",
+"BBKP",
+"Banks"
+],
+[
 "BTPS",
 "BTPN Syariah",
 "Banks"
 ],
 [
+"BBYB",
+"BBYB",
+"Banks"
+],
+[
 "PNBN",
 "PNBN",
 "Banks"
 ],
 [
-"BBYB",
-"BBYB",
+"TUGU",
+"TUGU",
 "Banks"
 ],
 [
@@ -95,18 +100,13 @@
 "Banks"
 ],
 [
-"TUGU",
-"TUGU",
+"CFIN",
+"CFIN",
 "Banks"
 ],
 [
 "AGRO",
 "AGRO",
-"Banks"
-],
-[
-"CFIN",
-"CFIN",
 "Banks"
 ],
 [
@@ -145,13 +145,13 @@
 "BasicMaterials"
 ],
 [
-"NIKL",
-"NIKL",
+"SRSN",
+"SRSN",
 "BasicMaterials"
 ],
 [
-"SRSN",
-"SRSN",
+"NIKL",
+"NIKL",
 "BasicMaterials"
 ],
 [
@@ -200,18 +200,13 @@
 "Consumer"
 ],
 [
-"JPFA",
-"Japfa Comfeed",
-"Consumer"
-],
-[
 "CPIN",
 "Charoen Pokphand",
 "Consumer"
 ],
 [
-"ICBP",
-"Indofood CBP",
+"JPFA",
+"Japfa Comfeed",
 "Consumer"
 ],
 [
@@ -220,18 +215,23 @@
 "Consumer"
 ],
 [
-"TAPG",
-"TAPG",
+"ICBP",
+"Indofood CBP",
 "Consumer"
 ],
 [
-"AALI",
-"AALI",
+"TAPG",
+"TAPG",
 "Consumer"
 ],
 [
 "GGRM",
 "Gudang Garam",
+"Consumer"
+],
+[
+"AALI",
+"AALI",
 "Consumer"
 ],
 [
@@ -245,18 +245,18 @@
 "Consumer"
 ],
 [
-"SIDO",
-"Sido Muncul",
-"Consumer"
-],
-[
 "MYOR",
 "Mayora Indah",
 "Consumer"
 ],
 [
-"DSNG",
-"DSNG",
+"SSMS",
+"SSMS",
+"Consumer"
+],
+[
+"SIDO",
+"Sido Muncul",
 "Consumer"
 ],
 [
@@ -265,8 +265,8 @@
 "Consumer"
 ],
 [
-"SSMS",
-"SSMS",
+"DSNG",
+"DSNG",
 "Consumer"
 ],
 [
@@ -295,6 +295,11 @@
 "Consumer"
 ],
 [
+"ADES",
+"ADES",
+"Consumer"
+],
+[
 "CLEO",
 "CLEO",
 "Consumer"
@@ -307,11 +312,6 @@
 [
 "MAIN",
 "MAIN",
-"Consumer"
-],
-[
-"ADES",
-"ADES",
 "Consumer"
 ],
 [
@@ -345,13 +345,13 @@
 "Energy"
 ],
 [
-"ADRO",
-"Adaro Energy",
+"RAJA",
+"Rukun Raharja",
 "Energy"
 ],
 [
-"RAJA",
-"Rukun Raharja",
+"ADRO",
+"Adaro Energy",
 "Energy"
 ],
 [
@@ -370,13 +370,13 @@
 "Energy"
 ],
 [
-"ADMR",
-"Adaro Minerals",
+"PTBA",
+"Bukit Asam",
 "Energy"
 ],
 [
-"PTBA",
-"Bukit Asam",
+"ADMR",
+"Adaro Minerals",
 "Energy"
 ],
 [
@@ -410,18 +410,13 @@
 "Energy"
 ],
 [
-"TOBA",
-"TOBA",
-"Energy"
-],
-[
 "BSSR",
 "BSSR",
 "Energy"
 ],
 [
-"ABMM",
-"ABMM",
+"TOBA",
+"TOBA",
 "Energy"
 ],
 [
@@ -430,8 +425,8 @@
 "Energy"
 ],
 [
-"APEX",
-"APEX",
+"ABMM",
+"ABMM",
 "Energy"
 ],
 [
@@ -500,23 +495,28 @@
 "Industrials"
 ],
 [
-"MSIN",
-"MSIN",
-"Media"
+"HEXA",
+"HEXA",
+"Industrials"
 ],
 [
-"MDIA",
-"MDIA",
-"Media"
-],
-[
-"FILM",
-"FILM",
+"MSIN",
+"MSIN",
 "Media"
 ],
 [
 "SCMA",
 "Surya Citra Media",
+"Media"
+],
+[
+"MDIA",
+"MDIA",
+"Media"
+],
+[
+"FILM",
+"FILM",
 "Media"
 ],
 [
@@ -535,13 +535,13 @@
 "Metals"
 ],
 [
-"MDKA",
-"Merdeka Copper Gold",
+"BRMS",
+"Bumi Resources Minerals",
 "Metals"
 ],
 [
-"BRMS",
-"Bumi Resources Minerals",
+"MDKA",
+"Merdeka Copper Gold",
 "Metals"
 ],
 [
@@ -590,11 +590,6 @@
 "Metals"
 ],
 [
-"CITA",
-"CITA",
-"Metals"
-],
-[
 "JSMR",
 "Jasa Marga",
 "Other"
@@ -615,6 +610,11 @@
 "Property"
 ],
 [
+"CTRA",
+"Ciputra Development",
+"Property"
+],
+[
 "BKSL",
 "BKSL",
 "Property"
@@ -627,11 +627,6 @@
 [
 "CBDK",
 "Bangun Kosambi Sukses",
-"Property"
-],
-[
-"CTRA",
-"Ciputra Development",
 "Property"
 ],
 [
@@ -660,11 +655,6 @@
 "Property"
 ],
 [
-"ASRI",
-"ASRI",
-"Property"
-],
-[
 "INKP",
 "Indah Kiat Pulp",
 "PulpPaper"
@@ -680,13 +670,13 @@
 "Retail"
 ],
 [
-"ACES",
-"Aspirasi Hidup Indonesia",
+"MAPA",
+"MAP Aktif",
 "Retail"
 ],
 [
-"MAPA",
-"MAP Aktif",
+"ACES",
+"Aspirasi Hidup Indonesia",
 "Retail"
 ],
 [
@@ -710,18 +700,23 @@
 "Retail"
 ],
 [
+"MPPA",
+"MPPA",
+"Retail"
+],
+[
 "WIFI",
 "Solusi Sinergi Digital",
 "Tech"
 ],
 [
-"EMTK",
-"Elang Mahkota",
+"BUKA",
+"Bukalapak",
 "Tech"
 ],
 [
-"BUKA",
-"Bukalapak",
+"EMTK",
+"Elang Mahkota",
 "Tech"
 ],
 [
@@ -735,8 +730,8 @@
 "Tech"
 ],
 [
-"DIVA",
-"DIVA",
+"KIOS",
+"KIOS",
 "Tech"
 ],
 [
@@ -747,11 +742,6 @@
 [
 "MTDL",
 "MTDL",
-"Tech"
-],
-[
-"KIOS",
-"KIOS",
 "Tech"
 ],
 [
@@ -760,13 +750,13 @@
 "Telco"
 ],
 [
-"TOWR",
-"Sarana Menara",
+"ISAT",
+"Indosat",
 "Telco"
 ],
 [
-"ISAT",
-"Indosat",
+"TOWR",
+"Sarana Menara",
 "Telco"
 ],
 [
@@ -790,13 +780,13 @@
 "Transport"
 ],
 [
-"GIAA",
-"GIAA",
+"BIRD",
+"Blue Bird",
 "Transport"
 ],
 [
-"BIRD",
-"Blue Bird",
+"GIAA",
+"GIAA",
 "Transport"
 ],
 [
