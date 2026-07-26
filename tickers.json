@@ -30,18 +30,18 @@
 "Banks"
 ],
 [
-"BFIN",
-"BFIN",
-"Banks"
-],
-[
 "ARTO",
 "Bank Jago",
 "Banks"
 ],
 [
-"BANK",
-"BANK",
+"BFIN",
+"BFIN",
+"Banks"
+],
+[
+"BBYB",
+"BBYB",
 "Banks"
 ],
 [
@@ -55,13 +55,13 @@
 "Banks"
 ],
 [
-"BBYB",
-"BBYB",
+"PNBN",
+"PNBN",
 "Banks"
 ],
 [
-"PNBN",
-"PNBN",
+"BBKP",
+"BBKP",
 "Banks"
 ],
 [
@@ -75,18 +75,8 @@
 "Banks"
 ],
 [
-"BBKP",
-"BBKP",
-"Banks"
-],
-[
 "BNGA",
 "BNGA",
-"Banks"
-],
-[
-"TUGU",
-"TUGU",
 "Banks"
 ],
 [
@@ -95,13 +85,18 @@
 "Banks"
 ],
 [
-"CFIN",
-"CFIN",
+"TUGU",
+"TUGU",
 "Banks"
 ],
 [
 "BJBR",
 "Bank BJB",
+"Banks"
+],
+[
+"BANK",
+"BANK",
 "Banks"
 ],
 [
@@ -155,6 +150,11 @@
 "BasicMaterials"
 ],
 [
+"ARNA",
+"ARNA",
+"BasicMaterials"
+],
+[
 "SSIA",
 "SSIA",
 "Construction"
@@ -165,8 +165,18 @@
 "Construction"
 ],
 [
+"PTPP",
+"PTPP",
+"Construction"
+],
+[
 "TOTL",
 "TOTL",
+"Construction"
+],
+[
+"ADHI",
+"ADHI",
 "Construction"
 ],
 [
@@ -175,13 +185,13 @@
 "Consumer"
 ],
 [
-"INDF",
-"Indofood Sukses",
+"CPIN",
+"Charoen Pokphand",
 "Consumer"
 ],
 [
-"CPIN",
-"Charoen Pokphand",
+"INDF",
+"Indofood Sukses",
 "Consumer"
 ],
 [
@@ -195,6 +205,11 @@
 "Consumer"
 ],
 [
+"TAPG",
+"TAPG",
+"Consumer"
+],
+[
 "ICBP",
 "Indofood CBP",
 "Consumer"
@@ -202,11 +217,6 @@
 [
 "GGRM",
 "Gudang Garam",
-"Consumer"
-],
-[
-"TAPG",
-"TAPG",
 "Consumer"
 ],
 [
@@ -230,13 +240,13 @@
 "Consumer"
 ],
 [
-"AALI",
-"AALI",
+"CMRY",
+"Cisarua Mountain Dairy",
 "Consumer"
 ],
 [
-"CMRY",
-"Cisarua Mountain Dairy",
+"AALI",
+"AALI",
 "Consumer"
 ],
 [
@@ -245,11 +255,6 @@
 "Consumer"
 ],
 [
-"BWPT",
-"BWPT",
-"Consumer"
-],
-[
 "SIMP",
 "SIMP",
 "Consumer"
@@ -257,6 +262,11 @@
 [
 "DSNG",
 "DSNG",
+"Consumer"
+],
+[
+"BWPT",
+"BWPT",
 "Consumer"
 ],
 [
@@ -285,11 +295,6 @@
 "Consumer"
 ],
 [
-"TBLA",
-"TBLA",
-"Consumer"
-],
-[
 "BUMI",
 "Bumi Resources",
 "Energy"
@@ -300,23 +305,23 @@
 "Energy"
 ],
 [
-"RAJA",
-"Rukun Raharja",
-"Energy"
-],
-[
-"BREN",
-"Barito Renewables",
-"Energy"
-],
-[
 "CUAN",
 "Petrindo Jaya Kreasi",
 "Energy"
 ],
 [
+"RAJA",
+"Rukun Raharja",
+"Energy"
+],
+[
 "PTRO",
 "Petrosea",
+"Energy"
+],
+[
+"BREN",
+"Barito Renewables",
 "Energy"
 ],
 [
@@ -335,18 +340,13 @@
 "Energy"
 ],
 [
-"RMKE",
-"RMKE",
-"Energy"
-],
-[
 "INDY",
 "Indika Energy",
 "Energy"
 ],
 [
-"PTBA",
-"Bukit Asam",
+"RMKE",
+"RMKE",
 "Energy"
 ],
 [
@@ -365,6 +365,11 @@
 "Energy"
 ],
 [
+"PTBA",
+"Bukit Asam",
+"Energy"
+],
+[
 "PGEO",
 "Pertamina Geothermal",
 "Energy"
@@ -375,8 +380,8 @@
 "Energy"
 ],
 [
-"BSSR",
-"BSSR",
+"TOBA",
+"TOBA",
 "Energy"
 ],
 [
@@ -385,18 +390,13 @@
 "Energy"
 ],
 [
-"TOBA",
-"TOBA",
+"BSSR",
+"BSSR",
 "Energy"
 ],
 [
 "APEX",
 "APEX",
-"Energy"
-],
-[
-"BYAN",
-"BYAN",
 "Energy"
 ],
 [
@@ -455,23 +455,23 @@
 "Industrials"
 ],
 [
+"MDIA",
+"MDIA",
+"Media"
+],
+[
 "MSIN",
 "MSIN",
+"Media"
+],
+[
+"FILM",
+"FILM",
 "Media"
 ],
 [
 "SCMA",
 "Surya Citra Media",
-"Media"
-],
-[
-"MDIA",
-"MDIA",
-"Media"
-],
-[
-"FILM",
-"FILM",
 "Media"
 ],
 [
@@ -485,13 +485,13 @@
 "Media"
 ],
 [
-"ANTM",
-"Aneka Tambang",
+"BRMS",
+"Bumi Resources Minerals",
 "Metals"
 ],
 [
-"BRMS",
-"Bumi Resources Minerals",
+"ANTM",
+"Aneka Tambang",
 "Metals"
 ],
 [
@@ -560,8 +560,18 @@
 "Property"
 ],
 [
+"BKSL",
+"BKSL",
+"Property"
+],
+[
 "PWON",
 "Pakuwon Jati",
+"Property"
+],
+[
+"APLN",
+"APLN",
 "Property"
 ],
 [
@@ -570,38 +580,28 @@
 "Property"
 ],
 [
-"DMAS",
-"DMAS",
-"Property"
-],
-[
-"BKSL",
-"BKSL",
-"Property"
-],
-[
-"APLN",
-"APLN",
-"Property"
-],
-[
 "BSDE",
 "Bumi Serpong Damai",
 "Property"
 ],
 [
-"LPKR",
-"LPKR",
+"DMAS",
+"DMAS",
 "Property"
 ],
 [
-"CBDK",
-"Bangun Kosambi Sukses",
+"LPKR",
+"LPKR",
 "Property"
 ],
 [
 "SMRA",
 "Summarecon Agung",
+"Property"
+],
+[
+"CBDK",
+"Bangun Kosambi Sukses",
 "Property"
 ],
 [
@@ -630,13 +630,13 @@
 "Retail"
 ],
 [
-"MAPA",
-"MAP Aktif",
+"ERAA",
+"Erajaya Swasembada",
 "Retail"
 ],
 [
-"ERAA",
-"Erajaya Swasembada",
+"MAPA",
+"MAP Aktif",
 "Retail"
 ],
 [
@@ -655,18 +655,13 @@
 "Retail"
 ],
 [
-"RALS",
-"Ramayana Lestari",
-"Retail"
-],
-[
-"MPPA",
-"MPPA",
-"Retail"
-],
-[
 "WIFI",
 "Solusi Sinergi Digital",
+"Tech"
+],
+[
+"EMTK",
+"Elang Mahkota",
 "Tech"
 ],
 [
@@ -675,8 +670,8 @@
 "Tech"
 ],
 [
-"EMTK",
-"Elang Mahkota",
+"MLPT",
+"MLPT",
 "Tech"
 ],
 [
@@ -692,11 +687,6 @@
 [
 "WIRG",
 "WIRG",
-"Tech"
-],
-[
-"MLPT",
-"MLPT",
 "Tech"
 ],
 [
@@ -735,18 +725,18 @@
 "Transport"
 ],
 [
+"GIAA",
+"GIAA",
+"Transport"
+],
+[
+"SMDR",
+"SMDR",
+"Transport"
+],
+[
 "BIRD",
 "Blue Bird",
-"Transport"
-],
-[
-"GIAA",
-"GIAA",
-"Transport"
-],
-[
-"SMDR",
-"SMDR",
 "Transport"
 ]
 ]
