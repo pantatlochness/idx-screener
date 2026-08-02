@@ -20,13 +20,18 @@
 "Banks"
 ],
 [
+"BRIS",
+"Bank Syariah Indonesia",
+"Banks"
+],
+[
 "BBTN",
 "Bank Tabungan Negara",
 "Banks"
 ],
 [
-"BRIS",
-"Bank Syariah Indonesia",
+"BFIN",
+"BFIN",
 "Banks"
 ],
 [
@@ -35,11 +40,6 @@
 "Banks"
 ],
 [
-"BFIN",
-"BFIN",
-"Banks"
-],
-[
 "BBYB",
 "BBYB",
 "Banks"
@@ -55,23 +55,23 @@
 "Banks"
 ],
 [
-"PNBN",
-"PNBN",
-"Banks"
-],
-[
-"BBKP",
-"BBKP",
-"Banks"
-],
-[
 "BJTM",
 "BJTM",
 "Banks"
 ],
 [
+"PNBN",
+"PNBN",
+"Banks"
+],
+[
 "NISP",
 "NISP",
+"Banks"
+],
+[
+"BBKP",
+"BBKP",
 "Banks"
 ],
 [
@@ -140,6 +140,11 @@
 "BasicMaterials"
 ],
 [
+"ARNA",
+"ARNA",
+"BasicMaterials"
+],
+[
 "KRAS",
 "KRAS",
 "BasicMaterials"
@@ -150,8 +155,8 @@
 "BasicMaterials"
 ],
 [
-"ARNA",
-"ARNA",
+"FPNI",
+"FPNI",
 "BasicMaterials"
 ],
 [
@@ -165,13 +170,13 @@
 "Construction"
 ],
 [
-"PTPP",
-"PTPP",
+"TOTL",
+"TOTL",
 "Construction"
 ],
 [
-"TOTL",
-"TOTL",
+"PTPP",
+"PTPP",
 "Construction"
 ],
 [
@@ -185,33 +190,13 @@
 "Consumer"
 ],
 [
-"CPIN",
-"Charoen Pokphand",
-"Consumer"
-],
-[
 "INDF",
 "Indofood Sukses",
 "Consumer"
 ],
 [
-"JPFA",
-"Japfa Comfeed",
-"Consumer"
-],
-[
-"UNVR",
-"Unilever Indonesia",
-"Consumer"
-],
-[
-"TAPG",
-"TAPG",
-"Consumer"
-],
-[
-"ICBP",
-"Indofood CBP",
+"CPIN",
+"Charoen Pokphand",
 "Consumer"
 ],
 [
@@ -220,18 +205,43 @@
 "Consumer"
 ],
 [
+"TAPG",
+"TAPG",
+"Consumer"
+],
+[
+"UNVR",
+"Unilever Indonesia",
+"Consumer"
+],
+[
+"JPFA",
+"Japfa Comfeed",
+"Consumer"
+],
+[
+"ICBP",
+"Indofood CBP",
+"Consumer"
+],
+[
+"SSMS",
+"SSMS",
+"Consumer"
+],
+[
+"BWPT",
+"BWPT",
+"Consumer"
+],
+[
+"LSIP",
+"LSIP",
+"Consumer"
+],
+[
 "MYOR",
 "Mayora Indah",
-"Consumer"
-],
-[
-"SSMS",
-"SSMS",
-"Consumer"
-],
-[
-"LSIP",
-"LSIP",
 "Consumer"
 ],
 [
@@ -245,18 +255,13 @@
 "Consumer"
 ],
 [
-"AALI",
-"AALI",
-"Consumer"
-],
-[
 "SIDO",
 "Sido Muncul",
 "Consumer"
 ],
 [
-"SIMP",
-"SIMP",
+"AALI",
+"AALI",
 "Consumer"
 ],
 [
@@ -265,13 +270,8 @@
 "Consumer"
 ],
 [
-"BWPT",
-"BWPT",
-"Consumer"
-],
-[
-"ADES",
-"ADES",
+"SIMP",
+"SIMP",
 "Consumer"
 ],
 [
@@ -280,6 +280,11 @@
 "Consumer"
 ],
 [
+"ADES",
+"ADES",
+"Consumer"
+],
+[
 "CLEO",
 "CLEO",
 "Consumer"
@@ -292,6 +297,11 @@
 [
 "WIIM",
 "WIIM",
+"Consumer"
+],
+[
+"MLBI",
+"MLBI",
 "Consumer"
 ],
 [
@@ -310,13 +320,13 @@
 "Energy"
 ],
 [
-"RAJA",
-"Rukun Raharja",
+"PTRO",
+"Petrosea",
 "Energy"
 ],
 [
-"PTRO",
-"Petrosea",
+"RAJA",
+"Rukun Raharja",
 "Energy"
 ],
 [
@@ -335,13 +345,13 @@
 "Energy"
 ],
 [
-"PGAS",
-"Perusahaan Gas Negara",
+"INDY",
+"Indika Energy",
 "Energy"
 ],
 [
-"INDY",
-"Indika Energy",
+"PGAS",
+"Perusahaan Gas Negara",
 "Energy"
 ],
 [
@@ -355,13 +365,13 @@
 "Energy"
 ],
 [
-"ITMG",
-"Indo Tambangraya",
+"AKRA",
+"AKR Corporindo",
 "Energy"
 ],
 [
-"AKRA",
-"AKR Corporindo",
+"ITMG",
+"Indo Tambangraya",
 "Energy"
 ],
 [
@@ -390,13 +400,13 @@
 "Energy"
 ],
 [
-"BSSR",
-"BSSR",
+"APEX",
+"APEX",
 "Energy"
 ],
 [
-"APEX",
-"APEX",
+"BSSR",
+"BSSR",
 "Energy"
 ],
 [
@@ -440,13 +450,13 @@
 "Industrials"
 ],
 [
-"AUTO",
-"AUTO",
+"GJTL",
+"GJTL",
 "Industrials"
 ],
 [
-"GJTL",
-"GJTL",
+"AUTO",
+"AUTO",
 "Industrials"
 ],
 [
@@ -485,13 +495,13 @@
 "Media"
 ],
 [
-"BRMS",
-"Bumi Resources Minerals",
+"ANTM",
+"Aneka Tambang",
 "Metals"
 ],
 [
-"ANTM",
-"Aneka Tambang",
+"BRMS",
+"Bumi Resources Minerals",
 "Metals"
 ],
 [
@@ -510,23 +520,23 @@
 "Metals"
 ],
 [
-"MBMA",
-"Merdeka Battery",
-"Metals"
-],
-[
-"ARCI",
-"ARCI",
-"Metals"
-],
-[
 "NCKL",
 "Trimegah Bangun Persada",
 "Metals"
 ],
 [
+"MBMA",
+"Merdeka Battery",
+"Metals"
+],
+[
 "PSAB",
 "J Resources",
+"Metals"
+],
+[
+"ARCI",
+"ARCI",
 "Metals"
 ],
 [
@@ -580,28 +590,28 @@
 "Property"
 ],
 [
+"DMAS",
+"DMAS",
+"Property"
+],
+[
 "BSDE",
 "Bumi Serpong Damai",
 "Property"
 ],
 [
-"DMAS",
-"DMAS",
-"Property"
-],
-[
 "LPKR",
 "LPKR",
-"Property"
-],
-[
-"SMRA",
-"Summarecon Agung",
 "Property"
 ],
 [
 "CBDK",
 "Bangun Kosambi Sukses",
+"Property"
+],
+[
+"SMRA",
+"Summarecon Agung",
 "Property"
 ],
 [
@@ -655,8 +665,23 @@
 "Retail"
 ],
 [
+"ECII",
+"ECII",
+"Retail"
+],
+[
+"RALS",
+"RALS",
+"Retail"
+],
+[
 "WIFI",
 "Solusi Sinergi Digital",
+"Tech"
+],
+[
+"MLPT",
+"MLPT",
 "Tech"
 ],
 [
@@ -667,11 +692,6 @@
 [
 "BUKA",
 "Bukalapak",
-"Tech"
-],
-[
-"MLPT",
-"MLPT",
 "Tech"
 ],
 [
@@ -690,8 +710,18 @@
 "Tech"
 ],
 [
+"DIVA",
+"DIVA",
+"Tech"
+],
+[
 "MSTI",
 "MSTI",
+"Tech"
+],
+[
+"DMMX",
+"DMMX",
 "Tech"
 ],
 [
@@ -725,13 +755,13 @@
 "Transport"
 ],
 [
-"GIAA",
-"GIAA",
+"SMDR",
+"SMDR",
 "Transport"
 ],
 [
-"SMDR",
-"SMDR",
+"GIAA",
+"GIAA",
 "Transport"
 ],
 [
