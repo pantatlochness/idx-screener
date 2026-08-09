@@ -25,13 +25,13 @@
 "Banks"
 ],
 [
-"BBTN",
-"Bank Tabungan Negara",
+"BFIN",
+"BFIN",
 "Banks"
 ],
 [
-"BFIN",
-"BFIN",
+"BBTN",
+"Bank Tabungan Negara",
 "Banks"
 ],
 [
@@ -45,28 +45,13 @@
 "Banks"
 ],
 [
-"PNLF",
-"PNLF",
-"Banks"
-],
-[
 "BDMN",
 "BDMN",
 "Banks"
 ],
 [
-"BJTM",
-"BJTM",
-"Banks"
-],
-[
-"PNBN",
-"PNBN",
-"Banks"
-],
-[
-"NISP",
-"NISP",
+"PNLF",
+"PNLF",
 "Banks"
 ],
 [
@@ -75,8 +60,23 @@
 "Banks"
 ],
 [
+"NISP",
+"NISP",
+"Banks"
+],
+[
+"BJTM",
+"BJTM",
+"Banks"
+],
+[
 "BNGA",
 "BNGA",
+"Banks"
+],
+[
+"PNBN",
+"PNBN",
 "Banks"
 ],
 [
@@ -85,13 +85,13 @@
 "Banks"
 ],
 [
-"TUGU",
-"TUGU",
+"BJBR",
+"Bank BJB",
 "Banks"
 ],
 [
-"BJBR",
-"Bank BJB",
+"TUGU",
+"TUGU",
 "Banks"
 ],
 [
@@ -140,6 +140,11 @@
 "BasicMaterials"
 ],
 [
+"FPNI",
+"FPNI",
+"BasicMaterials"
+],
+[
 "ARNA",
 "ARNA",
 "BasicMaterials"
@@ -150,23 +155,13 @@
 "BasicMaterials"
 ],
 [
-"AGII",
-"AGII",
-"BasicMaterials"
-],
-[
-"FPNI",
-"FPNI",
-"BasicMaterials"
-],
-[
 "SSIA",
 "SSIA",
 "Construction"
 ],
 [
-"NRCA",
-"NRCA",
+"JKON",
+"JKON",
 "Construction"
 ],
 [
@@ -175,13 +170,18 @@
 "Construction"
 ],
 [
-"PTPP",
-"PTPP",
+"NRCA",
+"NRCA",
 "Construction"
 ],
 [
 "ADHI",
 "ADHI",
+"Construction"
+],
+[
+"PTPP",
+"PTPP",
 "Construction"
 ],
 [
@@ -205,8 +205,8 @@
 "Consumer"
 ],
 [
-"TAPG",
-"TAPG",
+"ICBP",
+"Indofood CBP",
 "Consumer"
 ],
 [
@@ -215,28 +215,18 @@
 "Consumer"
 ],
 [
+"TAPG",
+"TAPG",
+"Consumer"
+],
+[
 "JPFA",
 "Japfa Comfeed",
 "Consumer"
 ],
 [
-"ICBP",
-"Indofood CBP",
-"Consumer"
-],
-[
-"SSMS",
-"SSMS",
-"Consumer"
-],
-[
 "BWPT",
 "BWPT",
-"Consumer"
-],
-[
-"LSIP",
-"LSIP",
 "Consumer"
 ],
 [
@@ -245,8 +235,28 @@
 "Consumer"
 ],
 [
+"SIDO",
+"Sido Muncul",
+"Consumer"
+],
+[
+"SSMS",
+"SSMS",
+"Consumer"
+],
+[
 "HMSP",
 "HM Sampoerna",
+"Consumer"
+],
+[
+"LSIP",
+"LSIP",
+"Consumer"
+],
+[
+"DSNG",
+"DSNG",
 "Consumer"
 ],
 [
@@ -255,18 +265,8 @@
 "Consumer"
 ],
 [
-"SIDO",
-"Sido Muncul",
-"Consumer"
-],
-[
 "AALI",
 "AALI",
-"Consumer"
-],
-[
-"DSNG",
-"DSNG",
 "Consumer"
 ],
 [
@@ -290,13 +290,18 @@
 "Consumer"
 ],
 [
+"WIIM",
+"WIIM",
+"Consumer"
+],
+[
 "MAIN",
 "MAIN",
 "Consumer"
 ],
 [
-"WIIM",
-"WIIM",
+"TBLA",
+"TBLA",
 "Consumer"
 ],
 [
@@ -315,13 +320,13 @@
 "Energy"
 ],
 [
-"CUAN",
-"Petrindo Jaya Kreasi",
+"PTRO",
+"Petrosea",
 "Energy"
 ],
 [
-"PTRO",
-"Petrosea",
+"CUAN",
+"Petrindo Jaya Kreasi",
 "Energy"
 ],
 [
@@ -335,13 +340,13 @@
 "Energy"
 ],
 [
-"ADRO",
-"Adaro Energy",
+"MEDC",
+"Medco Energi",
 "Energy"
 ],
 [
-"MEDC",
-"Medco Energi",
+"ADRO",
+"Adaro Energy",
 "Energy"
 ],
 [
@@ -355,13 +360,13 @@
 "Energy"
 ],
 [
-"RMKE",
-"RMKE",
+"ADMR",
+"Adaro Minerals",
 "Energy"
 ],
 [
-"ADMR",
-"Adaro Minerals",
+"RMKE",
+"RMKE",
 "Energy"
 ],
 [
@@ -390,16 +395,16 @@
 "Energy"
 ],
 [
-"TOBA",
-"TOBA",
-"Energy"
-],
-[
 "HRUM",
 "Harum Energy",
 "Energy"
 ],
 [
+"TOBA",
+"TOBA",
+"Energy"
+],
+[
 "APEX",
 "APEX",
 "Energy"
@@ -407,6 +412,11 @@
 [
 "BSSR",
 "BSSR",
+"Energy"
+],
+[
+"WINS",
+"WINS",
 "Energy"
 ],
 [
@@ -415,18 +425,13 @@
 "Healthcare"
 ],
 [
-"MIKA",
-"Mitra Keluarga",
-"Healthcare"
-],
-[
 "HEAL",
 "Medikaloka Hermina",
 "Healthcare"
 ],
 [
-"PRDA",
-"PRDA",
+"MIKA",
+"Mitra Keluarga",
 "Healthcare"
 ],
 [
@@ -437,6 +442,16 @@
 [
 "TSPC",
 "TSPC",
+"Healthcare"
+],
+[
+"PRDA",
+"PRDA",
+"Healthcare"
+],
+[
+"SILO",
+"SILO",
 "Healthcare"
 ],
 [
@@ -495,6 +510,11 @@
 "Media"
 ],
 [
+"VIVA",
+"VIVA",
+"Media"
+],
+[
 "ANTM",
 "Aneka Tambang",
 "Metals"
@@ -520,23 +540,23 @@
 "Metals"
 ],
 [
-"NCKL",
-"Trimegah Bangun Persada",
-"Metals"
-],
-[
 "MBMA",
 "Merdeka Battery",
 "Metals"
 ],
 [
-"PSAB",
-"J Resources",
+"ARCI",
+"ARCI",
 "Metals"
 ],
 [
-"ARCI",
-"ARCI",
+"NCKL",
+"Trimegah Bangun Persada",
+"Metals"
+],
+[
+"PSAB",
+"J Resources",
 "Metals"
 ],
 [
@@ -565,13 +585,13 @@
 "Property"
 ],
 [
-"KIJA",
-"KIJA",
+"BKSL",
+"BKSL",
 "Property"
 ],
 [
-"BKSL",
-"BKSL",
+"LPKR",
+"LPKR",
 "Property"
 ],
 [
@@ -580,13 +600,8 @@
 "Property"
 ],
 [
-"APLN",
-"APLN",
-"Property"
-],
-[
-"CTRA",
-"Ciputra Development",
+"KIJA",
+"KIJA",
 "Property"
 ],
 [
@@ -600,8 +615,13 @@
 "Property"
 ],
 [
-"LPKR",
-"LPKR",
+"CTRA",
+"Ciputra Development",
+"Property"
+],
+[
+"APLN",
+"APLN",
 "Property"
 ],
 [
@@ -700,18 +720,23 @@
 "Tech"
 ],
 [
+"WIRG",
+"WIRG",
+"Tech"
+],
+[
 "GOTO",
 "GoTo Gojek Tokopedia",
 "Tech"
 ],
 [
-"WIRG",
-"WIRG",
+"DIVA",
+"DIVA",
 "Tech"
 ],
 [
-"DIVA",
-"DIVA",
+"DMMX",
+"DMMX",
 "Tech"
 ],
 [
@@ -720,8 +745,8 @@
 "Tech"
 ],
 [
-"DMMX",
-"DMMX",
+"MTDL",
+"MTDL",
 "Tech"
 ],
 [
