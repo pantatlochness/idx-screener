@@ -70,13 +70,18 @@
 "Banks"
 ],
 [
+"NISP",
+"NISP",
+"Banks"
+],
+[
 "BNGA",
 "BNGA",
 "Banks"
 ],
 [
-"NISP",
-"NISP",
+"TUGU",
+"TUGU",
 "Banks"
 ],
 [
@@ -85,18 +90,13 @@
 "Banks"
 ],
 [
-"PNBN",
-"PNBN",
-"Banks"
-],
-[
-"TUGU",
-"TUGU",
-"Banks"
-],
-[
 "BJBR",
 "Bank BJB",
+"Banks"
+],
+[
+"PNBN",
+"PNBN",
 "Banks"
 ],
 [
@@ -130,8 +130,8 @@
 "BasicMaterials"
 ],
 [
-"SRSN",
-"SRSN",
+"FPNI",
+"FPNI",
 "BasicMaterials"
 ],
 [
@@ -140,8 +140,8 @@
 "BasicMaterials"
 ],
 [
-"FPNI",
-"FPNI",
+"SRSN",
+"SRSN",
 "BasicMaterials"
 ],
 [
@@ -210,13 +210,18 @@
 "Consumer"
 ],
 [
-"ICBP",
-"Indofood CBP",
+"BWPT",
+"BWPT",
 "Consumer"
 ],
 [
 "TAPG",
 "TAPG",
+"Consumer"
+],
+[
+"ICBP",
+"Indofood CBP",
 "Consumer"
 ],
 [
@@ -230,18 +235,8 @@
 "Consumer"
 ],
 [
-"BWPT",
-"BWPT",
-"Consumer"
-],
-[
 "SIDO",
 "Sido Muncul",
-"Consumer"
-],
-[
-"MYOR",
-"Mayora Indah",
 "Consumer"
 ],
 [
@@ -250,18 +245,23 @@
 "Consumer"
 ],
 [
+"MYOR",
+"Mayora Indah",
+"Consumer"
+],
+[
 "SSMS",
 "SSMS",
 "Consumer"
 ],
 [
-"LSIP",
-"LSIP",
+"AALI",
+"AALI",
 "Consumer"
 ],
 [
-"AALI",
-"AALI",
+"LSIP",
+"LSIP",
 "Consumer"
 ],
 [
@@ -300,13 +300,13 @@
 "Consumer"
 ],
 [
-"MAIN",
-"MAIN",
+"TBLA",
+"TBLA",
 "Consumer"
 ],
 [
-"TBLA",
-"TBLA",
+"MAIN",
+"MAIN",
 "Consumer"
 ],
 [
@@ -320,13 +320,13 @@
 "Energy"
 ],
 [
-"DEWA",
-"Darma Henwa",
+"CUAN",
+"Petrindo Jaya Kreasi",
 "Energy"
 ],
 [
-"CUAN",
-"Petrindo Jaya Kreasi",
+"DEWA",
+"Darma Henwa",
 "Energy"
 ],
 [
@@ -365,23 +365,18 @@
 "Energy"
 ],
 [
+"RMKE",
+"RMKE",
+"Energy"
+],
+[
 "PGAS",
 "Perusahaan Gas Negara",
 "Energy"
 ],
 [
-"RMKE",
-"RMKE",
-"Energy"
-],
-[
 "ITMG",
 "Indo Tambangraya",
-"Energy"
-],
-[
-"AKRA",
-"AKR Corporindo",
 "Energy"
 ],
 [
@@ -395,8 +390,8 @@
 "Energy"
 ],
 [
-"ELSA",
-"Elnusa",
+"AKRA",
+"AKR Corporindo",
 "Energy"
 ],
 [
@@ -405,6 +400,16 @@
 "Energy"
 ],
 [
+"ELSA",
+"Elnusa",
+"Energy"
+],
+[
+"BYAN",
+"BYAN",
+"Energy"
+],
+[
 "TOBA",
 "TOBA",
 "Energy"
@@ -422,11 +427,6 @@
 [
 "WINS",
 "WINS",
-"Energy"
-],
-[
-"BYAN",
-"BYAN",
 "Energy"
 ],
 [
@@ -452,6 +452,11 @@
 [
 "TSPC",
 "TSPC",
+"Healthcare"
+],
+[
+"PRDA",
+"PRDA",
 "Healthcare"
 ],
 [
@@ -482,6 +487,11 @@
 [
 "SMSM",
 "SMSM",
+"Industrials"
+],
+[
+"HEXA",
+"HEXA",
 "Industrials"
 ],
 [
@@ -550,18 +560,18 @@
 "Metals"
 ],
 [
-"NCKL",
-"Trimegah Bangun Persada",
-"Metals"
-],
-[
-"ARCI",
-"ARCI",
-"Metals"
-],
-[
 "PSAB",
 "J Resources",
+"Metals"
+],
+[
+"ARCI",
+"ARCI",
+"Metals"
+],
+[
+"NCKL",
+"Trimegah Bangun Persada",
 "Metals"
 ],
 [
@@ -585,6 +595,11 @@
 "Other"
 ],
 [
+"KIJA",
+"KIJA",
+"Property"
+],
+[
 "PANI",
 "Pantai Indah Kapuk Dua",
 "Property"
@@ -592,6 +607,11 @@
 [
 "BKSL",
 "BKSL",
+"Property"
+],
+[
+"DMAS",
+"DMAS",
 "Property"
 ],
 [
@@ -605,23 +625,18 @@
 "Property"
 ],
 [
-"KIJA",
-"KIJA",
+"BSDE",
+"Bumi Serpong Damai",
 "Property"
 ],
 [
-"DMAS",
-"DMAS",
+"APLN",
+"APLN",
 "Property"
 ],
 [
 "CBDK",
 "Bangun Kosambi Sukses",
-"Property"
-],
-[
-"BSDE",
-"Bumi Serpong Damai",
 "Property"
 ],
 [
@@ -635,18 +650,18 @@
 "Property"
 ],
 [
-"APLN",
-"APLN",
-"Property"
-],
-[
-"DILD",
-"DILD",
+"BEST",
+"BEST",
 "Property"
 ],
 [
 "ASRI",
 "ASRI",
+"Property"
+],
+[
+"DILD",
+"DILD",
 "Property"
 ],
 [
@@ -690,28 +705,18 @@
 "Retail"
 ],
 [
-"RALS",
-"RALS",
-"Retail"
-],
-[
-"ECII",
-"ECII",
-"Retail"
-],
-[
 "WIFI",
 "Solusi Sinergi Digital",
 "Tech"
 ],
 [
-"MLPT",
-"MLPT",
+"EMTK",
+"Elang Mahkota",
 "Tech"
 ],
 [
-"EMTK",
-"Elang Mahkota",
+"MLPT",
+"MLPT",
 "Tech"
 ],
 [
@@ -725,6 +730,11 @@
 "Tech"
 ],
 [
+"KIOS",
+"KIOS",
+"Tech"
+],
+[
 "DIVA",
 "DIVA",
 "Tech"
@@ -732,11 +742,6 @@
 [
 "GOTO",
 "GoTo Gojek Tokopedia",
-"Tech"
-],
-[
-"KIOS",
-"KIOS",
 "Tech"
 ],
 [
@@ -765,6 +770,11 @@
 "Telco"
 ],
 [
+"TOWR",
+"Sarana Menara",
+"Telco"
+],
+[
 "EXCL",
 "XL Axiata",
 "Telco"
@@ -772,11 +782,6 @@
 [
 "MTEL",
 "Dayamitra Telekomunikasi",
-"Telco"
-],
-[
-"TOWR",
-"Sarana Menara",
 "Telco"
 ],
 [
