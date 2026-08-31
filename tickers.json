@@ -40,13 +40,13 @@
 "Banks"
 ],
 [
-"BDMN",
-"BDMN",
+"BBHI",
+"BBHI",
 "Banks"
 ],
 [
-"BBHI",
-"BBHI",
+"BDMN",
+"BDMN",
 "Banks"
 ],
 [
@@ -65,13 +65,13 @@
 "Banks"
 ],
 [
-"BJTM",
-"BJTM",
+"NISP",
+"NISP",
 "Banks"
 ],
 [
-"NISP",
-"NISP",
+"BJTM",
+"BJTM",
 "Banks"
 ],
 [
@@ -125,13 +125,18 @@
 "BasicMaterials"
 ],
 [
+"FPNI",
+"FPNI",
+"BasicMaterials"
+],
+[
 "INTP",
 "Indocement",
 "BasicMaterials"
 ],
 [
-"FPNI",
-"FPNI",
+"EKAD",
+"EKAD",
 "BasicMaterials"
 ],
 [
@@ -142,11 +147,6 @@
 [
 "SRSN",
 "SRSN",
-"BasicMaterials"
-],
-[
-"EKAD",
-"EKAD",
 "BasicMaterials"
 ],
 [
@@ -195,13 +195,18 @@
 "Consumer"
 ],
 [
+"CPIN",
+"Charoen Pokphand",
+"Consumer"
+],
+[
 "INDF",
 "Indofood Sukses",
 "Consumer"
 ],
 [
-"CPIN",
-"Charoen Pokphand",
+"BWPT",
+"BWPT",
 "Consumer"
 ],
 [
@@ -210,23 +215,13 @@
 "Consumer"
 ],
 [
-"BWPT",
-"BWPT",
-"Consumer"
-],
-[
-"TAPG",
-"TAPG",
-"Consumer"
-],
-[
 "ICBP",
 "Indofood CBP",
 "Consumer"
 ],
 [
-"UNVR",
-"Unilever Indonesia",
+"TAPG",
+"TAPG",
 "Consumer"
 ],
 [
@@ -235,13 +230,8 @@
 "Consumer"
 ],
 [
-"SIDO",
-"Sido Muncul",
-"Consumer"
-],
-[
-"HMSP",
-"HM Sampoerna",
+"UNVR",
+"Unilever Indonesia",
 "Consumer"
 ],
 [
@@ -250,28 +240,38 @@
 "Consumer"
 ],
 [
-"SSMS",
-"SSMS",
+"HMSP",
+"HM Sampoerna",
+"Consumer"
+],
+[
+"SIDO",
+"Sido Muncul",
 "Consumer"
 ],
 [
 "AALI",
 "AALI",
-"Consumer"
-],
-[
-"LSIP",
-"LSIP",
-"Consumer"
-],
-[
-"DSNG",
-"DSNG",
 "Consumer"
 ],
 [
 "CMRY",
 "Cisarua Mountain Dairy",
+"Consumer"
+],
+[
+"LSIP",
+"LSIP",
+"Consumer"
+],
+[
+"SSMS",
+"SSMS",
+"Consumer"
+],
+[
+"DSNG",
+"DSNG",
 "Consumer"
 ],
 [
@@ -295,8 +295,8 @@
 "Consumer"
 ],
 [
-"ADES",
-"ADES",
+"MAIN",
+"MAIN",
 "Consumer"
 ],
 [
@@ -305,13 +305,8 @@
 "Consumer"
 ],
 [
-"MAIN",
-"MAIN",
-"Consumer"
-],
-[
-"MLBI",
-"MLBI",
+"ADES",
+"ADES",
 "Consumer"
 ],
 [
@@ -340,18 +335,8 @@
 "Energy"
 ],
 [
-"RAJA",
-"Rukun Raharja",
-"Energy"
-],
-[
 "INDY",
 "Indika Energy",
-"Energy"
-],
-[
-"MEDC",
-"Medco Energi",
 "Energy"
 ],
 [
@@ -360,13 +345,18 @@
 "Energy"
 ],
 [
-"ADMR",
-"Adaro Minerals",
+"RAJA",
+"Rukun Raharja",
 "Energy"
 ],
 [
-"RMKE",
-"RMKE",
+"MEDC",
+"Medco Energi",
+"Energy"
+],
+[
+"ADMR",
+"Adaro Minerals",
 "Energy"
 ],
 [
@@ -380,8 +370,8 @@
 "Energy"
 ],
 [
-"PGEO",
-"Pertamina Geothermal",
+"RMKE",
+"RMKE",
 "Energy"
 ],
 [
@@ -390,8 +380,8 @@
 "Energy"
 ],
 [
-"AKRA",
-"AKR Corporindo",
+"PGEO",
+"Pertamina Geothermal",
 "Energy"
 ],
 [
@@ -400,16 +390,21 @@
 "Energy"
 ],
 [
+"AKRA",
+"AKR Corporindo",
+"Energy"
+],
+[
+"BYAN",
+"BYAN",
+"Energy"
+],
+[
 "ELSA",
 "Elnusa",
 "Energy"
 ],
 [
-"BYAN",
-"BYAN",
-"Energy"
-],
-[
 "TOBA",
 "TOBA",
 "Energy"
@@ -427,6 +422,11 @@
 [
 "WINS",
 "WINS",
+"Energy"
+],
+[
+"ABMM",
+"ABMM",
 "Energy"
 ],
 [
@@ -475,13 +475,13 @@
 "Industrials"
 ],
 [
-"GJTL",
-"GJTL",
+"AUTO",
+"AUTO",
 "Industrials"
 ],
 [
-"AUTO",
-"AUTO",
+"GJTL",
+"GJTL",
 "Industrials"
 ],
 [
@@ -550,13 +550,8 @@
 "Metals"
 ],
 [
-"INCO",
-"Vale Indonesia",
-"Metals"
-],
-[
-"MBMA",
-"Merdeka Battery",
+"ARCI",
+"ARCI",
 "Metals"
 ],
 [
@@ -565,8 +560,13 @@
 "Metals"
 ],
 [
-"ARCI",
-"ARCI",
+"MBMA",
+"Merdeka Battery",
+"Metals"
+],
+[
+"INCO",
+"Vale Indonesia",
 "Metals"
 ],
 [
@@ -600,6 +600,11 @@
 "Property"
 ],
 [
+"DMAS",
+"DMAS",
+"Property"
+],
+[
 "PANI",
 "Pantai Indah Kapuk Dua",
 "Property"
@@ -607,11 +612,6 @@
 [
 "BKSL",
 "BKSL",
-"Property"
-],
-[
-"DMAS",
-"DMAS",
 "Property"
 ],
 [
@@ -715,16 +715,16 @@
 "Tech"
 ],
 [
-"MLPT",
-"MLPT",
-"Tech"
-],
-[
 "BUKA",
 "Bukalapak",
 "Tech"
 ],
 [
+"MLPT",
+"MLPT",
+"Tech"
+],
+[
 "WIRG",
 "WIRG",
 "Tech"
@@ -732,11 +732,6 @@
 [
 "KIOS",
 "KIOS",
-"Tech"
-],
-[
-"DIVA",
-"DIVA",
 "Tech"
 ],
 [
@@ -760,6 +755,11 @@
 "Tech"
 ],
 [
+"DIVA",
+"DIVA",
+"Tech"
+],
+[
 "TLKM",
 "Telkom Indonesia",
 "Telco"
@@ -775,13 +775,13 @@
 "Telco"
 ],
 [
-"EXCL",
-"XL Axiata",
+"MTEL",
+"Dayamitra Telekomunikasi",
 "Telco"
 ],
 [
-"MTEL",
-"Dayamitra Telekomunikasi",
+"EXCL",
+"XL Axiata",
 "Telco"
 ],
 [
