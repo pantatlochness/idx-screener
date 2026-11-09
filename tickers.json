@@ -25,28 +25,28 @@
 "Banks"
 ],
 [
-"BDMN",
-"BDMN",
-"Banks"
-],
-[
 "BBTN",
 "Bank Tabungan Negara",
 "Banks"
 ],
 [
-"BNGA",
-"BNGA",
+"BDMN",
+"BDMN",
 "Banks"
 ],
 [
-"BFIN",
-"BFIN",
+"BNGA",
+"BNGA",
 "Banks"
 ],
 [
 "BTPS",
 "BTPN Syariah",
+"Banks"
+],
+[
+"BFIN",
+"BFIN",
 "Banks"
 ],
 [
@@ -70,18 +70,18 @@
 "Banks"
 ],
 [
-"TUGU",
-"TUGU",
-"Banks"
-],
-[
 "BJTM",
 "BJTM",
 "Banks"
 ],
 [
-"BBKP",
-"BBKP",
+"TUGU",
+"TUGU",
+"Banks"
+],
+[
+"ADMF",
+"ADMF",
 "Banks"
 ],
 [
@@ -90,8 +90,8 @@
 "Banks"
 ],
 [
-"ADMF",
-"ADMF",
+"BBKP",
+"BBKP",
 "Banks"
 ],
 [
@@ -155,11 +155,6 @@
 "BasicMaterials"
 ],
 [
-"FPNI",
-"FPNI",
-"BasicMaterials"
-],
-[
 "SSIA",
 "SSIA",
 "Construction"
@@ -180,13 +175,13 @@
 "Consumer"
 ],
 [
-"INDF",
-"Indofood Sukses",
+"ICBP",
+"Indofood CBP",
 "Consumer"
 ],
 [
-"ICBP",
-"Indofood CBP",
+"INDF",
+"Indofood Sukses",
 "Consumer"
 ],
 [
@@ -195,23 +190,23 @@
 "Consumer"
 ],
 [
-"AALI",
-"AALI",
-"Consumer"
-],
-[
 "UNVR",
 "Unilever Indonesia",
 "Consumer"
 ],
 [
-"ULTJ",
-"Ultrajaya",
+"AALI",
+"AALI",
 "Consumer"
 ],
 [
 "JPFA",
 "Japfa Comfeed",
+"Consumer"
+],
+[
+"ULTJ",
+"Ultrajaya",
 "Consumer"
 ],
 [
@@ -230,6 +225,16 @@
 "Consumer"
 ],
 [
+"CMRY",
+"Cisarua Mountain Dairy",
+"Consumer"
+],
+[
+"SIDO",
+"Sido Muncul",
+"Consumer"
+],
+[
 "HMSP",
 "HM Sampoerna",
 "Consumer"
@@ -240,28 +245,13 @@
 "Consumer"
 ],
 [
-"CMRY",
-"Cisarua Mountain Dairy",
-"Consumer"
-],
-[
 "SSMS",
 "SSMS",
 "Consumer"
 ],
 [
-"SIDO",
-"Sido Muncul",
-"Consumer"
-],
-[
 "CLEO",
 "CLEO",
-"Consumer"
-],
-[
-"BWPT",
-"BWPT",
 "Consumer"
 ],
 [
@@ -275,6 +265,11 @@
 "Consumer"
 ],
 [
+"BWPT",
+"BWPT",
+"Consumer"
+],
+[
 "WIIM",
 "WIIM",
 "Consumer"
@@ -285,8 +280,8 @@
 "Consumer"
 ],
 [
-"MAIN",
-"MAIN",
+"TBLA",
+"TBLA",
 "Consumer"
 ],
 [
@@ -300,13 +295,13 @@
 "Energy"
 ],
 [
-"PTRO",
-"Petrosea",
+"PTBA",
+"Bukit Asam",
 "Energy"
 ],
 [
-"PTBA",
-"Bukit Asam",
+"PTRO",
+"Petrosea",
 "Energy"
 ],
 [
@@ -320,23 +315,23 @@
 "Energy"
 ],
 [
-"MEDC",
-"Medco Energi",
-"Energy"
-],
-[
 "PGAS",
 "Perusahaan Gas Negara",
 "Energy"
 ],
 [
-"ITMG",
-"Indo Tambangraya",
+"MEDC",
+"Medco Energi",
 "Energy"
 ],
 [
 "ADMR",
 "Adaro Minerals",
+"Energy"
+],
+[
+"ITMG",
+"Indo Tambangraya",
 "Energy"
 ],
 [
@@ -360,11 +355,6 @@
 "Energy"
 ],
 [
-"BYAN",
-"BYAN",
-"Energy"
-],
-[
 "TOBA",
 "TOBA",
 "Energy"
@@ -377,6 +367,11 @@
 [
 "ELSA",
 "Elnusa",
+"Energy"
+],
+[
+"BYAN",
+"BYAN",
 "Energy"
 ],
 [
@@ -395,8 +390,8 @@
 "Energy"
 ],
 [
-"SMMT",
-"SMMT",
+"ABMM",
+"ABMM",
 "Energy"
 ],
 [
@@ -405,8 +400,13 @@
 "Energy"
 ],
 [
-"ABMM",
-"ABMM",
+"SMMT",
+"SMMT",
+"Energy"
+],
+[
+"WINS",
+"WINS",
 "Energy"
 ],
 [
@@ -417,11 +417,6 @@
 [
 "APEX",
 "APEX",
-"Energy"
-],
-[
-"DOID",
-"DOID",
 "Energy"
 ],
 [
@@ -450,13 +445,13 @@
 "Healthcare"
 ],
 [
-"PYFA",
-"PYFA",
+"SILO",
+"SILO",
 "Healthcare"
 ],
 [
-"SILO",
-"SILO",
+"PYFA",
+"PYFA",
 "Healthcare"
 ],
 [
@@ -570,13 +565,13 @@
 "Metals"
 ],
 [
-"PSAB",
-"J Resources",
+"ARCI",
+"ARCI",
 "Metals"
 ],
 [
-"ARCI",
-"ARCI",
+"PSAB",
+"J Resources",
 "Metals"
 ],
 [
@@ -585,13 +580,13 @@
 "Metals"
 ],
 [
-"NICL",
-"NICL",
+"DKFT",
+"DKFT",
 "Metals"
 ],
 [
-"DKFT",
-"DKFT",
+"NICL",
+"NICL",
 "Metals"
 ],
 [
@@ -605,11 +600,6 @@
 "Property"
 ],
 [
-"KIJA",
-"KIJA",
-"Property"
-],
-[
 "PANI",
 "Pantai Indah Kapuk Dua",
 "Property"
@@ -620,8 +610,18 @@
 "Property"
 ],
 [
+"KIJA",
+"KIJA",
+"Property"
+],
+[
 "BSDE",
 "Bumi Serpong Damai",
+"Property"
+],
+[
+"CTRA",
+"Ciputra Development",
 "Property"
 ],
 [
@@ -635,11 +635,6 @@
 "Property"
 ],
 [
-"CTRA",
-"Ciputra Development",
-"Property"
-],
-[
 "BKSL",
 "BKSL",
 "Property"
@@ -655,11 +650,6 @@
 "Property"
 ],
 [
-"PPRO",
-"PPRO",
-"Property"
-],
-[
 "APLN",
 "APLN",
 "Property"
@@ -667,6 +657,11 @@
 [
 "MTLA",
 "MTLA",
+"Property"
+],
+[
+"PPRO",
+"PPRO",
 "Property"
 ],
 [
@@ -740,28 +735,18 @@
 "Tech"
 ],
 [
-"MLPT",
-"MLPT",
-"Tech"
-],
-[
-"DIVA",
-"DIVA",
-"Tech"
-],
-[
 "WIRG",
 "WIRG",
 "Tech"
 ],
 [
-"MSTI",
-"MSTI",
+"MLPT",
+"MLPT",
 "Tech"
 ],
 [
-"KIOS",
-"KIOS",
+"MSTI",
+"MSTI",
 "Tech"
 ],
 [
@@ -807,11 +792,6 @@
 [
 "TMAS",
 "TMAS",
-"Transport"
-],
-[
-"SAPX",
-"SAPX",
 "Transport"
 ]
 ]
